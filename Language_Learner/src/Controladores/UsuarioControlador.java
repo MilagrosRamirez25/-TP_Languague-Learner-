@@ -261,69 +261,110 @@ public class UsuarioControlador implements UserRepository {
 
 
 	public boolean updateUserWithDetails(Usuario user,
-			String profNombre, String profApellido, String profDni, String profEspecialidad,
-			String alumNombre, String alumApellido, String alumDni) {
+	        String profNombre, String profApellido, String profDni, String profEspecialidad,
+	        String alumNombre, String alumApellido, String alumDni) {
 
-		try {
-			connection.setAutoCommit(false);
+	    try {
+	        connection.setAutoCommit(false);
 
-			// Actualizar tabla usuario
-			String queryUser = "UPDATE usuario SET usuario = ?, email = ?, pass = ?, rol = ? WHERE id = ?";
-			try (PreparedStatement stmtUser = connection.prepareStatement(queryUser)) {
-				stmtUser.setString(1, user.getUsuario());
-				stmtUser.setString(2, user.getEmail());
-				stmtUser.setString(3, user.getPass());
-				stmtUser.setInt(4, user.getRol());
-				stmtUser.setInt(5, user.getId());
+	        // Actualizar tabla usuario
+	        String queryUser = "UPDATE usuario SET usuario = ?, email = ?, pass = ?, rol = ? WHERE id = ?";
+	        try (PreparedStatement stmtUser = connection.prepareStatement(queryUser)) {
+	            stmtUser.setString(1, user.getUsuario());
+	            stmtUser.setString(2, user.getEmail());
+	            stmtUser.setString(3, user.getPass());
+	            stmtUser.setInt(4, user.getRol());
+	            stmtUser.setInt(5, user.getId());
 
-				int rows = stmtUser.executeUpdate();
-				if (rows == 0) throw new SQLException("Error actualizando usuario");
+	            int rows = stmtUser.executeUpdate();
+	            if (rows == 0) throw new SQLException("Error actualizando usuario");
 
-				// Actualizar profesor o alumno según rol
-				if (user.getRol() == 1) { // Profesor
-					String queryProf = "UPDATE profesor SET nombre = ?, apellido = ?, dni = ?, especialidad = ? WHERE id_usuario = ?";
-					try (PreparedStatement stmtProf = connection.prepareStatement(queryProf)) {
-						stmtProf.setString(1, profNombre);
-						stmtProf.setString(2, profApellido);
-						stmtProf.setString(3, profDni);
-						stmtProf.setString(4, profEspecialidad);
-						stmtProf.setInt(5, user.getId());
-						stmtProf.executeUpdate();
-					}
-				} else if (user.getRol() == 2) { // Alumno
-					String queryAlum = "UPDATE alumno SET nombre = ?, apellido = ?, dni = ? WHERE id_usuario = ?";
-					try (PreparedStatement stmtAlum = connection.prepareStatement(queryAlum)) {
-						stmtAlum.setString(1, alumNombre);
-						stmtAlum.setString(2, alumApellido);
-						stmtAlum.setString(3, alumDni);
-						stmtAlum.setInt(4, user.getId());
-						stmtAlum.executeUpdate();
-					}
-				}
-			}
+	            // Actualizar profesor o alumno según rol
+	            if (user.getRol() == 1) { // Profesor
+	                String queryProf = "UPDATE profesor SET nombre = ?, apellido = ?, dni = ?, especialidad = ? WHERE id = ?";
+	                try (PreparedStatement stmtProf = connection.prepareStatement(queryProf)) {
+	                    stmtProf.setString(1, profNombre);
+	                    stmtProf.setString(2, profApellido);
+	                    stmtProf.setString(3, profDni);
+	                    stmtProf.setString(4, profEspecialidad);
+	                    stmtProf.setInt(5, user.getId());
+	                    stmtProf.executeUpdate();
+	                }
+	            } else if (user.getRol() == 2) { // Alumno
+	                String queryAlum = "UPDATE alumno SET nombre = ?, apellido = ?, dni = ? WHERE id = ?";
+	                try (PreparedStatement stmtAlum = connection.prepareStatement(queryAlum)) {
+	                    stmtAlum.setString(1, alumNombre);
+	                    stmtAlum.setString(2, alumApellido);
+	                    stmtAlum.setString(3, alumDni);
+	                    stmtAlum.setInt(4, user.getId());
+	                    stmtAlum.executeUpdate();
+	                }
+	            }
+	        }
 
-			connection.commit();
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
-			return false;
-		} finally {
-			try { connection.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
-		}
+	        connection.commit();
+	        return true;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        try { connection.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+	        return false;
+	    } finally {
+	        try { connection.setAutoCommit(true); } catch (SQLException e) { e.printStackTrace(); }
+	    }
 	}
+
 	public boolean usuarioOEmailExiste(String usuario, String email) {
 		String query = "SELECT id FROM usuario WHERE usuario = ? OR email = ?";
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {
 			stmt.setString(1, usuario);
 			stmt.setString(2, email);
 			ResultSet rs = stmt.executeQuery();
-			return rs.next(); // true si existe
+			return rs.next(); 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return true; // por seguridad, asumimos que existe si hay error
+			return true; 
 		}
 	}
 
+	public int obtenerIdPorNombreUsuario(String nombreUsuario) {
+	    String query = "SELECT id FROM usuario WHERE usuario = ?";
+	    try (PreparedStatement ps = connection.prepareStatement(query)) {
+	        ps.setString(1, nombreUsuario);
+	        ResultSet rs = ps.executeQuery();
+	        if (rs.next()) {
+	            return rs.getInt("id");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return -1; // No encontrado
+	}
+	public List<Alumno> obtenerAlumnosPorCurso(int idCurso) {
+	    List<Alumno> alumnos = new ArrayList<>();
+	    String query = """
+	        SELECT a.id, a.nombre, a.apellido, a.dni
+	        FROM alumno_curso ac
+	        JOIN alumno a ON ac.id_alumno = a.id
+	        WHERE ac.id_curso = ?
+	    """;
+
+	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+	        stmt.setInt(1, idCurso);
+	        try (ResultSet rs = stmt.executeQuery()) {
+	            while (rs.next()) {
+	                Alumno a = new Alumno();
+	                a.setId(rs.getInt("id"));
+	                a.setNombre(rs.getString("nombre"));
+	                a.setApellido(rs.getString("apellido"));
+	                a.setDni(rs.getString("dni"));
+	                alumnos.add(a);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+
+	    return alumnos;
+	}
 
 }

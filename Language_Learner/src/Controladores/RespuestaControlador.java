@@ -1,11 +1,9 @@
 package Controladores;
 
-import Modelos.Respuesta;
 import Interfaces.RespuestaRepository;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import Modelos.Respuesta;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,20 +18,14 @@ public class RespuestaControlador implements RespuestaRepository {
     @Override
     public List<Respuesta> getAllRespuestas() {
         List<Respuesta> respuestas = new ArrayList<>();
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM respuesta");
-            ResultSet rs = statement.executeQuery();
+        String query = "SELECT * FROM respuesta";
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                Respuesta r = new Respuesta(
-                        rs.getInt("id"),
-                        rs.getInt("id_ejercicio"),
-                        rs.getString("respuesta"),
-                        rs.getBoolean("es_correcta")
-                );
-                respuestas.add(r);
+                respuestas.add(mapearRespuesta(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al obtener todas las respuestas: " + e.getMessage());
         }
         return respuestas;
     }
@@ -41,95 +33,97 @@ public class RespuestaControlador implements RespuestaRepository {
     @Override
     public Respuesta getRespuestaById(int id) {
         Respuesta respuesta = null;
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM respuesta WHERE id = ?");
-            statement.setInt(1, id);
-            ResultSet rs = statement.executeQuery();
-            if (rs.next()) {
-                respuesta = new Respuesta(
-                        rs.getInt("id"),
-                        rs.getInt("id_ejercicio"),
-                        rs.getString("respuesta"),
-                        rs.getBoolean("es_correcta")
-                );
+        String query = "SELECT * FROM respuesta WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    respuesta = mapearRespuesta(rs);
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al obtener respuesta por ID: " + e.getMessage());
         }
         return respuesta;
     }
 
-    @Override
-    public void addRespuesta(Respuesta respuesta) {
-        try {
-            PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO respuesta (id_ejercicio, respuesta, es_correcta) VALUES (?, ?, ?)"
-            );
-            statement.setInt(1, respuesta.getIdEjercicio());
-            statement.setString(2, respuesta.getRespuesta());
-            statement.setBoolean(3, respuesta.isCorrecta());
-
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+   
+ 
+    
 
     @Override
     public boolean updateRespuesta(Respuesta respuesta) {
-        try {
-            PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE respuesta SET id_ejercicio = ?, respuesta = ?, es_correcta = ? WHERE id = ?"
-            );
-            statement.setInt(1, respuesta.getIdEjercicio());
-            statement.setString(2, respuesta.getRespuesta());
-            statement.setBoolean(3, respuesta.isCorrecta());
-            statement.setInt(4, respuesta.getId());
-
-            int rows = statement.executeUpdate();
-            return rows > 0;
+        String query = "UPDATE respuesta SET idEjercicio = ?, respuesta = ?, esCorrecta = ? WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, respuesta.getIdEjercicio());
+            stmt.setString(2, respuesta.getRespuesta());
+            stmt.setBoolean(3, respuesta.isCorrecta());
+            stmt.setInt(4, respuesta.getId());
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al actualizar respuesta: " + e.getMessage());
             return false;
         }
     }
 
     @Override
     public boolean deleteRespuesta(int id) {
-        try {
-            PreparedStatement statement = connection.prepareStatement(
-                    "DELETE FROM respuesta WHERE id = ?"
-            );
-            statement.setInt(1, id);
-            int rows = statement.executeUpdate();
-            return rows > 0;
+        String query = "DELETE FROM respuesta WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al eliminar respuesta: " + e.getMessage());
             return false;
         }
     }
 
     @Override
-    public List<Respuesta> getRespuestasPorEjercicio(int idEjercicio) {
+    public List<Respuesta> obtenerRespuestasPorEjercicio(int idEjercicio) {
         List<Respuesta> respuestas = new ArrayList<>();
-        try {
-            PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM respuesta WHERE id_ejercicio = ?"
-            );
-            statement.setInt(1, idEjercicio);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                Respuesta r = new Respuesta(
-                        rs.getInt("id"),
-                        rs.getInt("id_ejercicio"),
-                        rs.getString("respuesta"),
-                        rs.getBoolean("es_correcta")
-                );
-                respuestas.add(r);
+        String query = "SELECT * FROM respuesta WHERE idEjercicio = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, idEjercicio);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    respuestas.add(mapearRespuesta(rs));
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al obtener respuestas por ejercicio: " + e.getMessage());
         }
         return respuestas;
     }
+
+    private Respuesta mapearRespuesta(ResultSet rs) throws SQLException {
+        return new Respuesta(
+                rs.getInt("id"),
+                rs.getInt("idEjercicio"),
+                rs.getString("respuesta"),
+                rs.getBoolean("esCorrecta")
+        );
+    }
+
+	@Override
+	public List<Respuesta> getRespuestasPorEjercicio(int idEjercicio) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	 @Override
+	public boolean agregarRespuesta(Respuesta respuesta) {
+	    String query = "INSERT INTO respuesta (idEjercicio, respuesta, esCorrecta) VALUES (?, ?, ?)";
+	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+	        stmt.setInt(1, respuesta.getIdEjercicio());
+	        stmt.setString(2, respuesta.getRespuesta());
+	        stmt.setBoolean(3, respuesta.isCorrecta());
+	        return stmt.executeUpdate() > 0;
+	    } catch (SQLException e) {
+	        System.err.println("Error al agregar respuesta: " + e.getMessage());
+	        return false;
+	    }
+	}
+
+	
+
+	
 }

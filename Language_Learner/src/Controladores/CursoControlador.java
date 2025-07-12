@@ -193,6 +193,38 @@ public class CursoControlador implements CursoRepository {
 
         return profesores;
     }
+    public List<Curso> obtenerCursosPorProfesor(int idProfesor) {
+        List<Curso> cursos = new ArrayList<>();
+        String query = """
+            SELECT c.*, u.usuario AS nombreProfesor
+            FROM curso c
+            JOIN usuario u ON c.idProfesor = u.id
+            WHERE c.idProfesor = ?
+        """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, idProfesor);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Curso curso = new Curso(
+                        rs.getInt("id"),
+                        rs.getString("nombreCurso"),
+                        rs.getString("descripcion"),
+                        rs.getString("fechaInicio"),
+                        rs.getInt("idProfesor"),
+                        rs.getString("nombreProfesor"),
+                        rs.getInt("capacidadMaxima"),
+                        rs.getInt("cantidadAlumnosInscritos")
+                    );
+                    cursos.add(curso);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cursos;
+    }
 
 
    
@@ -232,5 +264,126 @@ public class CursoControlador implements CursoRepository {
         return especialidad;
     }
 
+    public List<Curso> obtenerCursosPorAlumno(int idAlumno) {
+        List<Curso> cursos = new ArrayList<>();
+        String query = """
+            SELECT c.*, u.usuario AS nombreProfesor
+            FROM curso c
+            JOIN usuario u ON c.idProfesor = u.id
+            JOIN alumno_curso ac ON c.id = ac.id_curso
+            WHERE ac.id_alumno = ?
+        """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, idAlumno);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Curso curso = new Curso(
+                        rs.getInt("id"),
+                        rs.getString("nombreCurso"),
+                        rs.getString("descripcion"),
+                        rs.getString("fechaInicio"),
+                        rs.getInt("idProfesor"),
+                        rs.getString("nombreProfesor"),
+                        rs.getInt("capacidadMaxima"),
+                        rs.getInt("cantidadAlumnosInscritos")
+                    );
+                    cursos.add(curso);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cursos;
+    }
+ // Obtener el id del curso a partir del nombre
+    public int obtenerIdCursoPorNombre(String nombreCurso) {
+        int idCurso = -1;
+        String query = "SELECT id FROM curso WHERE nombreCurso = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, nombreCurso);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    idCurso = rs.getInt("id");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idCurso;
+    }
+
+    // Inscribir alumno en curso
+    public boolean inscribirAlumnoEnCurso(int idAlumno, int idCurso) {
+        String queryCheck = "SELECT * FROM alumno_curso WHERE id_alumno = ? AND id_curso = ?";
+        String queryInsert = "INSERT INTO alumno_curso (id_alumno, id_curso, fecha_inscripcion) VALUES (?, ?, CURDATE())";
+
+        try (PreparedStatement stmtCheck = connection.prepareStatement(queryCheck)) {
+            stmtCheck.setInt(1, idAlumno);
+            stmtCheck.setInt(2, idCurso);
+            try (ResultSet rs = stmtCheck.executeQuery()) {
+                if (rs.next()) {
+                    // Ya está inscripto
+                    return false;
+                }
+            }
+
+            try (PreparedStatement stmtInsert = connection.prepareStatement(queryInsert)) {
+                stmtInsert.setInt(1, idAlumno);
+                stmtInsert.setInt(2, idCurso);
+                int filas = stmtInsert.executeUpdate();
+                return filas > 0;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+ // Método para traer todos los cursos con datos del profesor
+    public List<Curso> obtenerTodosLosCursos() {
+        List<Curso> cursos = new ArrayList<>();
+        String query = """
+            SELECT c.*, u.usuario AS nombreProfesor
+            FROM curso c
+            JOIN usuario u ON c.idProfesor = u.id
+        """;
+
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Curso curso = new Curso(
+                    rs.getInt("id"),
+                    rs.getString("nombreCurso"),
+                    rs.getString("descripcion"),
+                    rs.getString("fechaInicio"),
+                    rs.getInt("idProfesor"),
+                    rs.getString("nombreProfesor"),
+                    rs.getInt("capacidadMaxima"),
+                    rs.getInt("cantidadAlumnosInscritos")
+                );
+                cursos.add(curso);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return cursos;
+    }
+    public boolean eliminarInscripcionCurso(int idAlumno, int idCurso) {
+        String query = "DELETE FROM alumno_curso WHERE id_alumno = ? AND id_curso = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, idAlumno);
+            stmt.setInt(2, idCurso);
+            int rows = stmt.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+ 
 
 }

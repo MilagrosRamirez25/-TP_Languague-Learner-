@@ -18,23 +18,15 @@ public class ClaseControlador implements ClaseRepository {
     @Override
     public List<Clase> getAllClases() {
         List<Clase> clases = new ArrayList<>();
-        try {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM clase");
-            ResultSet rs = stmt.executeQuery();
+        String query = "SELECT * FROM clase";
+        try (PreparedStatement stmt = connection.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
-                Clase c = new Clase(
-                        rs.getInt("id"),
-                        rs.getInt("id_curso"),
-                        rs.getString("titulo"),
-                        rs.getString("tema"),
-                        rs.getString("contenido"),
-                        rs.getString("autor"),
-                        rs.getString("fecha_creacion")
-                );
-                clases.add(c);
+                clases.add(mapearClase(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al obtener todas las clases: " + e.getMessage());
         }
         return clases;
     }
@@ -42,51 +34,42 @@ public class ClaseControlador implements ClaseRepository {
     @Override
     public Clase getClaseById(int id) {
         Clase clase = null;
-        try {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM clase WHERE id = ?");
+        String query = "SELECT * FROM clase WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                clase = new Clase(
-                        rs.getInt("id"),
-                        rs.getInt("id_curso"),
-                        rs.getString("titulo"),
-                        rs.getString("tema"),
-                        rs.getString("contenido"),
-                        rs.getString("autor"),
-                        rs.getString("fecha_creacion")
-                );
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    clase = mapearClase(rs);
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al obtener la clase por ID: " + e.getMessage());
         }
         return clase;
     }
 
     @Override
-    public void addClase(Clase clase) {
-        try {
-            PreparedStatement stmt = connection.prepareStatement(
-                    "INSERT INTO clase (id_curso, titulo, tema, contenido, autor, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?)"
-            );
+    public boolean agregarClase(Clase clase) {
+        String query = "INSERT INTO clase (idCurso, titulo, tema, contenido, autor, fechaCreacion) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, clase.getIdCurso());
             stmt.setString(2, clase.getTitulo());
             stmt.setString(3, clase.getTema());
             stmt.setString(4, clase.getContenido());
             stmt.setString(5, clase.getAutor());
             stmt.setString(6, clase.getFechaCreacion());
-            stmt.executeUpdate();
+            int filas = stmt.executeUpdate();
+            return filas > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al agregar clase: " + e.getMessage());
+            return false;
         }
     }
 
     @Override
-    public boolean updateClase(Clase clase) {
-        try {
-            PreparedStatement stmt = connection.prepareStatement(
-                    "UPDATE clase SET id_curso = ?, titulo = ?, tema = ?, contenido = ?, autor = ?, fecha_creacion = ? WHERE id = ?"
-            );
+    public boolean actualizarClase(Clase clase) {
+        String query = "UPDATE clase SET idCurso = ?, titulo = ?, tema = ?, contenido = ?, autor = ?, fechaCreacion = ? WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, clase.getIdCurso());
             stmt.setString(2, clase.getTitulo());
             stmt.setString(3, clase.getTema());
@@ -95,48 +78,81 @@ public class ClaseControlador implements ClaseRepository {
             stmt.setString(6, clase.getFechaCreacion());
             stmt.setInt(7, clase.getId());
 
-            return stmt.executeUpdate() > 0;
-
+            int filas = stmt.executeUpdate();
+            return filas > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al actualizar clase: " + e.getMessage());
             return false;
         }
     }
 
     @Override
     public boolean deleteClase(int id) {
-        try {
-            PreparedStatement stmt = connection.prepareStatement("DELETE FROM clase WHERE id = ?");
+        String query = "DELETE FROM clase WHERE id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al eliminar clase: " + e.getMessage());
             return false;
         }
     }
 
     @Override
-    public List<Clase> getClasesPorCurso(int idCurso) {
+    public List<Clase> obtenerClasesPorCurso(int idCurso) {
         List<Clase> clases = new ArrayList<>();
-        try {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM clase WHERE id_curso = ?");
+        String query = "SELECT * FROM clase WHERE idCurso = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, idCurso);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Clase c = new Clase(
-                        rs.getInt("id"),
-                        rs.getInt("id_curso"),
-                        rs.getString("titulo"),
-                        rs.getString("tema"),
-                        rs.getString("contenido"),
-                        rs.getString("autor"),
-                        rs.getString("fecha_creacion")
-                );
-                clases.add(c);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    clases.add(mapearClase(rs));
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error al obtener clases por curso: " + e.getMessage());
         }
         return clases;
+    }
+
+    public Clase obtenerClasePorTituloYCursos(String titulo, int idCurso) {
+        Clase clase = null;
+        String query = "SELECT * FROM clase WHERE titulo = ? AND idCurso = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, titulo);
+            stmt.setInt(2, idCurso);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    clase = mapearClase(rs);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener clase por título y curso: " + e.getMessage());
+        }
+        return clase;
+    }
+
+    public boolean eliminarClasePorTituloYCursos(String titulo, int idCurso) {
+        String query = "DELETE FROM clase WHERE titulo = ? AND idCurso = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, titulo);
+            stmt.setInt(2, idCurso);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar clase por título y curso: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private Clase mapearClase(ResultSet rs) throws SQLException {
+        return new Clase(
+                rs.getInt("id"),
+                rs.getInt("idCurso"),
+                rs.getString("titulo"),
+                rs.getString("tema"),
+                rs.getString("contenido"),
+                rs.getString("autor"),
+                rs.getString("fechaCreacion")
+        );
     }
 }

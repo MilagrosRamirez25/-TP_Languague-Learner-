@@ -5,23 +5,29 @@ import java.util.LinkedList;
 public class Ejercicio {
 
     private int id;
-    private int idExamen; 
+    private int idExamen;
     private String contenido;
+    private String tipo; 
+    private int puntos; // Máximo 10
     private LinkedList<Respuesta> respuestas;
 
     public Ejercicio() {
         this.respuestas = new LinkedList<>();
     }
 
-    public Ejercicio(int id, int idExamen, String contenido) {
+    public Ejercicio(int id, int idExamen, String contenido, String tipo, int puntos) {
         this.id = id;
         this.idExamen = idExamen;
         this.contenido = contenido;
+        this.tipo = tipo;
+        this.puntos = puntos;
         this.respuestas = new LinkedList<>();
     }
 
-    public Ejercicio(String contenido) {
+    public Ejercicio(String contenido, String tipo, int puntos) {
         this.contenido = contenido;
+        this.tipo = tipo;
+        this.puntos = puntos;
         this.respuestas = new LinkedList<>();
     }
 
@@ -51,6 +57,22 @@ public class Ejercicio {
         this.contenido = contenido;
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public int getPuntos() {
+        return puntos;
+    }
+
+    public void setPuntos(int puntos) {
+        this.puntos = puntos;
+    }
+
     public LinkedList<Respuesta> getRespuestas() {
         return respuestas;
     }
@@ -59,8 +81,10 @@ public class Ejercicio {
         this.respuestas = respuestas;
     }
 
-    public void agregarRespuesta(String contenido, boolean esCorrecta) {
-        respuestas.add(new Respuesta(contenido, esCorrecta));
+    // Métodos auxiliares
+
+    public void agregarRespuesta(String texto, boolean esCorrecta) {
+        respuestas.add(new Respuesta(texto, esCorrecta));
     }
 
     public LinkedList<Respuesta> obtenerRespuestasCorrectas() {
@@ -79,6 +103,8 @@ public class Ejercicio {
                 "id=" + id +
                 ", idExamen=" + idExamen +
                 ", contenido='" + contenido + '\'' +
+                ", tipo='" + tipo + '\'' +
+                ", puntos=" + puntos +
                 ", respuestas=" + respuestas +
                 '}';
     }

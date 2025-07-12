@@ -13,6 +13,10 @@ import java.awt.Color;
 
 import Vistas.Admin.ListaCursos;
 import Vistas.Admin.ListaUsuarios;
+import Vistas.Alumno.MisCursosAlumno;
+import Vistas.Alumno.PerfilAlumno;
+import Vistas.Profesor.MisCursos;
+import Vistas.Profesor.PerfilProfesor;
 
 public class PantallaHome extends JFrame {
 
@@ -86,32 +90,41 @@ public class PantallaHome extends JFrame {
             JButton btnMisCursos = new JButton("Mis Cursos");
             btnMisCursos.setBounds(xInicio, yBotones, anchoBoton, altoBoton);
             btnMisCursos.addActionListener(e -> {
-                System.out.println("Acción Mis Cursos profesor");
+                MisCursos vista = new MisCursos(nombre, rol);
+                vista.setVisible(true);
+                dispose();
             });
             contentPane.add(btnMisCursos);
 
-            JButton btnCrearExamen = new JButton("Crear Examen");
-            btnCrearExamen.setBounds(xInicio + anchoBoton + espacioEntreBotones, yBotones, anchoBoton, altoBoton);
-            btnCrearExamen.addActionListener(e -> {
-                System.out.println("Acción Crear Examen profesor");
+            JButton btnMiPerfil = new JButton("Mi Perfil");
+            btnMiPerfil.setBounds(xInicio + anchoBoton + espacioEntreBotones, yBotones, anchoBoton, altoBoton);
+            btnMiPerfil.addActionListener(e -> {
+            	PerfilProfesor vista = new PerfilProfesor(nombre, rol); // Asegurate de tener esta clase creada
+                vista.setVisible(true);
+                dispose();
             });
-            contentPane.add(btnCrearExamen);
-
+            contentPane.add(btnMiPerfil);
+        
         } else if (rol == 2) { // Alumno
             JButton btnMisCursos = new JButton("Mis Cursos");
             btnMisCursos.setBounds(xInicio, yBotones, anchoBoton, altoBoton);
             btnMisCursos.addActionListener(e -> {
-                System.out.println("Acción Mis Cursos alumno");
+                MisCursosAlumno vista = new MisCursosAlumno(nombre, rol);
+                vista.setVisible(true);
+                dispose();
             });
             contentPane.add(btnMisCursos);
 
-            JButton btnVerExamenes = new JButton("Ver Exámenes");
-            btnVerExamenes.setBounds(xInicio + anchoBoton + espacioEntreBotones, yBotones, anchoBoton, altoBoton);
-            btnVerExamenes.addActionListener(e -> {
-                System.out.println("Acción Ver Exámenes alumno");
+            JButton btnMiPerfil = new JButton("Mi Perfil");
+            btnMiPerfil.setBounds(xInicio + anchoBoton + espacioEntreBotones, yBotones, anchoBoton, altoBoton);
+            btnMiPerfil.addActionListener(e -> {
+                PerfilAlumno vista = new PerfilAlumno(nombre, rol);
+                vista.setVisible(true);
+                dispose();
             });
-            contentPane.add(btnVerExamenes);
+            contentPane.add(btnMiPerfil);
         }
+
 
         JButton btnCerrarSesion = new JButton("Cerrar Sesión");
         btnCerrarSesion.setBounds(284, 125, 132, 35);

@@ -4,10 +4,12 @@ import java.util.List;
 import Modelos.Examen;
 
 public interface ExamenRepository {
-    List<Examen> getAllExamenes();
-    Examen getExamenById(int id);
-    void addExamen(Examen examen);
-    boolean updateExamen(Examen examen);
-    boolean deleteExamen(int id);
+ 
     List<Examen> getExamenesPorCurso(int idCurso);
+	boolean actualizarExamen(Examen examen);
+	List<Examen> obtenerTodosLosExamenes();
+	Examen obtenerExamenPorId(int id);
+	boolean agregarExamen(Examen examen);
+	boolean eliminarExamen(int id);
+	List<Examen> obtenerExamenesPorCurso(int idCurso);
 }

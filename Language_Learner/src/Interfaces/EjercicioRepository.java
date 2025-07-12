@@ -10,4 +10,5 @@ public interface EjercicioRepository {
     boolean updateEjercicio(Ejercicio ejercicio);
     boolean deleteEjercicio(int id);
     List<Ejercicio> getEjerciciosPorExamen(int idExamen);
+	List<Ejercicio> obtenerEjerciciosPorExamen(int idExamen);
 }

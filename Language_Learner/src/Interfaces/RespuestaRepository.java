@@ -9,11 +9,13 @@ public interface RespuestaRepository {
 
     Respuesta getRespuestaById(int id);
 
-    void addRespuesta(Respuesta respuesta);
-
     boolean updateRespuesta(Respuesta respuesta);
 
     boolean deleteRespuesta(int id);
 
     List<Respuesta> getRespuestasPorEjercicio(int idEjercicio);
+
+	List<Respuesta> obtenerRespuestasPorEjercicio(int idEjercicio);
+
+	boolean agregarRespuesta(Respuesta respuesta);
 }

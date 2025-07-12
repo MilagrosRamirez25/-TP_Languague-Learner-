@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-07-2025 a las 05:53:50
+-- Tiempo de generación: 12-07-2025 a las 06:50:44
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -60,7 +60,40 @@ INSERT INTO `alumno` (`id`, `nombre`, `apellido`, `dni`) VALUES
 (4, 'Luis', 'Fernández', '23456789'),
 (5, 'Ana', 'García', '34567890'),
 (6, 'Pedro', 'López', '45678901'),
-(21, 'brisa', 'baez', '12312');
+(10, 'Lucas', 'Fernández', '23456689'),
+(11, 'Marta', 'García', '3456799'),
+(12, 'Fernando', 'López', '46678901'),
+(13, 'Martina', 'Álvarez', '45678912'),
+(14, 'Carlos', 'Sánchez', '56789012'),
+(15, 'Lucia', 'Bravo', '67890123');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `alumno_curso`
+--
+
+CREATE TABLE `alumno_curso` (
+  `id` int(11) NOT NULL,
+  `id_alumno` int(11) NOT NULL,
+  `id_curso` int(11) NOT NULL,
+  `fecha_inscripcion` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `alumno_curso`
+--
+
+INSERT INTO `alumno_curso` (`id`, `id_alumno`, `id_curso`, `fecha_inscripcion`) VALUES
+(1, 4, 1, '2025-07-01'),
+(2, 5, 1, '2025-07-01'),
+(3, 6, 2, '2025-07-02'),
+(4, 10, 3, '2025-07-03'),
+(5, 11, 3, '2025-07-03'),
+(6, 12, 4, '2025-07-04'),
+(7, 13, 4, '2025-07-04'),
+(8, 14, 5, '2025-07-05'),
+(9, 15, 5, '2025-07-05');
 
 -- --------------------------------------------------------
 
@@ -125,17 +158,31 @@ INSERT INTO `curso` (`id`, `nombreCurso`, `descripcion`, `fechaInicio`, `idProfe
 CREATE TABLE `ejercicio` (
   `id` int(11) NOT NULL,
   `contenido` text NOT NULL,
-  `idExamen` int(11) DEFAULT NULL
+  `idExamen` int(11) DEFAULT NULL,
+  `tipo` varchar(50) NOT NULL DEFAULT 'selección simple',
+  `puntos` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `ejercicio`
 --
 
-INSERT INTO `ejercicio` (`id`, `contenido`, `idExamen`) VALUES
-(1, 'Selecciona la forma correcta del verbo \"to be\".', 1),
-(2, 'Escoge la conjugación correcta en pretérito.', 2),
-(3, 'Traduce estas palabras al francés.', 3);
+INSERT INTO `ejercicio` (`id`, `contenido`, `idExamen`, `tipo`, `puntos`) VALUES
+(1, 'Selecciona la forma correcta del verbo \"to be\".', 1, 'selección múltiple', 4),
+(2, 'Escoge la conjugación correcta en pretérito.', 1, 'selección simple', 3),
+(3, 'Traduce estas palabras al inglés.', 1, 'selección múltiple', 3),
+(4, 'Identifica el sonido correcto de la palabra \"ch\" en alemán.', 2, 'selección simple', 3),
+(5, 'Elige la estructura correcta de la oración subordinada.', 2, 'selección múltiple', 4),
+(6, 'Completa la frase con la forma correcta del verbo.', 2, 'selección simple', 3),
+(7, 'Traduce las siguientes palabras al francés.', 3, 'selección múltiple', 3),
+(8, 'Relaciona cada palabra con su significado.', 3, 'selección simple', 4),
+(9, 'Selecciona el género correcto de cada sustantivo.', 3, 'selección múltiple', 3),
+(10, 'Escoge la pronunciación correcta de la palabra \"ach\".', 4, 'selección simple', 2),
+(11, 'Identifica la fonética correcta para \"ch\" en alemán.', 4, 'selección múltiple', 3),
+(12, 'Relaciona sonidos con letras en alemán.', 4, 'selección simple', 5),
+(13, 'Elige la forma correcta del verbo en oraciones italianas.', 5, 'selección múltiple', 3),
+(14, 'Selecciona la estructura sintáctica correcta.', 5, 'selección simple', 4),
+(15, 'Completa la frase con la palabra adecuada.', 5, 'selección múltiple', 3);
 
 -- --------------------------------------------------------
 
@@ -146,17 +193,19 @@ INSERT INTO `ejercicio` (`id`, `contenido`, `idExamen`) VALUES
 CREATE TABLE `examen` (
   `id` int(11) NOT NULL,
   `titulo` varchar(100) NOT NULL,
-  `idCurso` int(11) DEFAULT NULL
+  `idClase` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `examen`
 --
 
-INSERT INTO `examen` (`id`, `titulo`, `idCurso`) VALUES
+INSERT INTO `examen` (`id`, `titulo`, `idClase`) VALUES
 (1, 'Examen Inicial Inglés', 1),
 (2, 'Examen Final Español', 2),
-(3, 'Examen Intermedio Francés', 3);
+(3, 'Examen Intermedio Francés', 3),
+(4, 'Examen de Fonética Alemana', 4),
+(5, 'Examen Final Italiano', 5);
 
 -- --------------------------------------------------------
 
@@ -209,11 +258,46 @@ INSERT INTO `respuesta` (`id`, `idEjercicio`, `respuesta`, `esCorrecta`) VALUES
 (6, 2, 'goed', 0),
 (7, 2, 'goes', 0),
 (8, 2, 'gone', 0),
-(9, 3, 'maison', 1),
-(10, 3, 'chat', 1),
-(11, 3, 'perro', 0),
-(12, 3, 'chien', 1),
-(13, 3, 'auto', 0);
+(9, 3, 'house', 1),
+(10, 3, 'cat', 1),
+(11, 3, 'dog', 0),
+(12, 3, 'cheval', 1),
+(13, 4, 'como en “ich” (palatal fricativa)', 1),
+(14, 4, 'como en “chico” (africada)', 0),
+(15, 4, 'como en “ach” (uvular fricativa)', 1),
+(16, 5, 'Que el verbo vaya al final', 1),
+(17, 5, 'Que comience con sujeto', 0),
+(18, 5, 'Uso correcto de la conjunción \"weil\"', 1),
+(19, 5, 'El verbo en infinitivo primero', 0),
+(20, 6, 'Yo como', 1),
+(21, 6, 'Tú comes', 0),
+(22, 6, 'Él comió', 1),
+(23, 7, 'maison', 1),
+(24, 7, 'chat', 1),
+(25, 7, 'perro', 0),
+(26, 7, 'chien', 1),
+(27, 8, 'libro - book', 1),
+(28, 8, 'agua - water', 1),
+(29, 8, 'fuego - fire', 0),
+(30, 9, 'El', 1),
+(31, 9, 'La', 1),
+(32, 9, 'Los', 0),
+(33, 10, 'Como en “ach” suave', 1),
+(34, 10, 'Como en “ach” fuerte', 0),
+(35, 11, 'Sonido palatal', 1),
+(36, 11, 'Sonido gutural', 1),
+(37, 11, 'Sonido nasal', 0),
+(38, 12, 'Letra A', 1),
+(39, 12, 'Letra B', 0),
+(40, 12, 'Letra C', 1),
+(41, 13, 'Mangiare', 1),
+(42, 13, 'Correre', 1),
+(43, 13, 'Andare', 0),
+(44, 14, 'Sujeto + Verbo + Complemento', 1),
+(45, 14, 'Verbo + Sujeto + Complemento', 0),
+(46, 15, 'Completa con \"amico\"', 1),
+(47, 15, 'Completa con \"amica\"', 1),
+(48, 15, 'Completa con \"amici\"', 0);
 
 -- --------------------------------------------------------
 
@@ -243,7 +327,12 @@ INSERT INTO `usuario` (`id`, `usuario`, `email`, `pass`, `rol`) VALUES
 (7, 'carlos1', 'carlos@mail.com', '123', 1),
 (8, 'laura1', 'laura@mail.com', '123', 1),
 (9, 'mario1', 'mario@mail.com', '123', 1),
-(21, 'bri10', 'bri@gmailcom', '123', 2);
+(10, 'lucas1', 'lucas@mail.com', '123', 2),
+(11, 'martas', 'marta@mail.com', '123', 2),
+(12, 'fernin10', 'fernin@mail.com', '123', 2),
+(13, 'martu1', 'martu@mail.com', '123', 2),
+(14, 'carlas1', 'carlas@mail.com', '123', 2),
+(15, 'luciax', 'luciax@mail.com', '123', 2);
 
 --
 -- Índices para tablas volcadas
@@ -262,6 +351,14 @@ ALTER TABLE `administrador`
 ALTER TABLE `alumno`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `dni` (`dni`);
+
+--
+-- Indices de la tabla `alumno_curso`
+--
+ALTER TABLE `alumno_curso`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_alumno` (`id_alumno`),
+  ADD KEY `id_curso` (`id_curso`);
 
 --
 -- Indices de la tabla `clase`
@@ -289,7 +386,7 @@ ALTER TABLE `ejercicio`
 --
 ALTER TABLE `examen`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `idCurso` (`idCurso`);
+  ADD KEY `examen_ibfk_1` (`idClase`);
 
 --
 -- Indices de la tabla `profesor`
@@ -318,10 +415,16 @@ ALTER TABLE `usuario`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `alumno_curso`
+--
+ALTER TABLE `alumno_curso`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
 -- AUTO_INCREMENT de la tabla `clase`
 --
 ALTER TABLE `clase`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `curso`
@@ -333,25 +436,25 @@ ALTER TABLE `curso`
 -- AUTO_INCREMENT de la tabla `ejercicio`
 --
 ALTER TABLE `ejercicio`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT de la tabla `examen`
 --
 ALTER TABLE `examen`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `respuesta`
 --
 ALTER TABLE `respuesta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- Restricciones para tablas volcadas
@@ -369,6 +472,13 @@ ALTER TABLE `administrador`
 --
 ALTER TABLE `alumno`
   ADD CONSTRAINT `alumno_ibfk_1` FOREIGN KEY (`id`) REFERENCES `usuario` (`id`) ON DELETE CASCADE;
+
+--
+-- Filtros para la tabla `alumno_curso`
+--
+ALTER TABLE `alumno_curso`
+  ADD CONSTRAINT `alumno_curso_ibfk_1` FOREIGN KEY (`id_alumno`) REFERENCES `alumno` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `alumno_curso_ibfk_2` FOREIGN KEY (`id_curso`) REFERENCES `curso` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `clase`
@@ -392,7 +502,7 @@ ALTER TABLE `ejercicio`
 -- Filtros para la tabla `examen`
 --
 ALTER TABLE `examen`
-  ADD CONSTRAINT `examen_ibfk_1` FOREIGN KEY (`idCurso`) REFERENCES `curso` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `examen_ibfk_1` FOREIGN KEY (`idClase`) REFERENCES `clase` (`id`) ON DELETE CASCADE;
 
 --
 -- Filtros para la tabla `profesor`

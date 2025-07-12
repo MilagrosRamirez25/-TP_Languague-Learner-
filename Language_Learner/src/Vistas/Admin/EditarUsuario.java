@@ -8,16 +8,15 @@ import Modelos.Usuario;
 public class EditarUsuario extends JFrame {
 
     private JTextField txtUsuario, txtEmail;
-    private JPasswordField txtPass; // Opcional para cambiar contraseña
+    private JPasswordField txtPass;
     private JComboBox<String> comboRol;
 
-    // Campos específicos
     private JTextField txtNombre, txtApellido, txtDni, txtEspecialidad;
+    private JCheckBox cbMostrarPass;
 
     private Usuario usuario;
     private UsuarioControlador controlador;
 
-    // Datos del usuario actual para pasar a ListaUsuarios
     private String nombreUsuarioActual;
     private int rolUsuarioActual;
 
@@ -28,11 +27,11 @@ public class EditarUsuario extends JFrame {
         this.controlador = new UsuarioControlador();
 
         setTitle("Editar Usuario");
-        setSize(450, 450);
+        setSize(450, 500);
         setLocationRelativeTo(null);
         setLayout(null);
 
-        // Campos básicos
+        // Usuario
         JLabel lblUsuario = new JLabel("Usuario:");
         lblUsuario.setBounds(30, 20, 100, 25);
         add(lblUsuario);
@@ -41,6 +40,7 @@ public class EditarUsuario extends JFrame {
         txtUsuario.setBounds(140, 20, 250, 25);
         add(txtUsuario);
 
+        // Email
         JLabel lblEmail = new JLabel("Email:");
         lblEmail.setBounds(30, 60, 100, 25);
         add(lblEmail);
@@ -49,6 +49,7 @@ public class EditarUsuario extends JFrame {
         txtEmail.setBounds(140, 60, 250, 25);
         add(txtEmail);
 
+        // Contraseña
         JLabel lblPass = new JLabel("Contraseña:");
         lblPass.setBounds(30, 100, 100, 25);
         add(lblPass);
@@ -57,67 +58,76 @@ public class EditarUsuario extends JFrame {
         txtPass.setBounds(140, 100, 250, 25);
         add(txtPass);
 
+        // Mostrar/Ocultar contraseña
+        cbMostrarPass = new JCheckBox("Mostrar contraseña");
+        cbMostrarPass.setBounds(140, 130, 200, 20);
+        cbMostrarPass.addActionListener(e -> {
+            txtPass.setEchoChar(cbMostrarPass.isSelected() ? (char) 0 : '•');
+        });
+        add(cbMostrarPass);
+
+        // Rol
         JLabel lblRol = new JLabel("Rol:");
-        lblRol.setBounds(30, 140, 100, 25);
+        lblRol.setBounds(30, 160, 100, 25);
         add(lblRol);
 
         comboRol = new JComboBox<>(new String[]{"Admin", "Profesor", "Alumno"});
         comboRol.setSelectedIndex(usuario.getRol());
-        comboRol.setBounds(140, 140, 250, 25);
+        comboRol.setBounds(140, 160, 250, 25);
         add(comboRol);
 
         // Campos específicos
         JLabel lblNombre = new JLabel("Nombre:");
-        lblNombre.setBounds(30, 180, 100, 25);
+        lblNombre.setBounds(30, 200, 100, 25);
         add(lblNombre);
 
         txtNombre = new JTextField();
-        txtNombre.setBounds(140, 180, 250, 25);
+        txtNombre.setBounds(140, 200, 250, 25);
         add(txtNombre);
 
         JLabel lblApellido = new JLabel("Apellido:");
-        lblApellido.setBounds(30, 220, 100, 25);
+        lblApellido.setBounds(30, 240, 100, 25);
         add(lblApellido);
 
         txtApellido = new JTextField();
-        txtApellido.setBounds(140, 220, 250, 25);
+        txtApellido.setBounds(140, 240, 250, 25);
         add(txtApellido);
 
         JLabel lblDni = new JLabel("DNI:");
-        lblDni.setBounds(30, 260, 100, 25);
+        lblDni.setBounds(30, 280, 100, 25);
         add(lblDni);
 
         txtDni = new JTextField();
-        txtDni.setBounds(140, 260, 250, 25);
+        txtDni.setBounds(140, 280, 250, 25);
         add(txtDni);
 
         JLabel lblEspecialidad = new JLabel("Especialidad:");
-        lblEspecialidad.setBounds(30, 300, 100, 25);
+        lblEspecialidad.setBounds(30, 320, 100, 25);
         add(lblEspecialidad);
 
         txtEspecialidad = new JTextField();
-        txtEspecialidad.setBounds(140, 300, 250, 25);
+        txtEspecialidad.setBounds(140, 320, 250, 25);
         add(txtEspecialidad);
 
-        // Mostrar u ocultar campos según rol inicial
+        // Mostrar campos específicos según rol
         actualizarCamposSegunRol(usuario.getRol());
-
-        // Cambiar visibilidad si cambia rol en combo
         comboRol.addActionListener(e -> {
             int rol = comboRol.getSelectedIndex();
             actualizarCamposSegunRol(rol);
         });
 
-        // Cargar datos específicos según rol
+        // Cargar datos extra
         cargarDatosExtras(usuario);
 
+        // Botón Guardar
         JButton btnGuardar = new JButton("Guardar");
-        btnGuardar.setBounds(140, 350, 100, 30);
+        btnGuardar.setBounds(140, 380, 100, 30);
         btnGuardar.addActionListener(e -> guardarCambios());
         add(btnGuardar);
 
+        // Botón Cancelar
         JButton btnCancelar = new JButton("Cancelar");
-        btnCancelar.setBounds(260, 350, 100, 30);
+        btnCancelar.setBounds(260, 380, 100, 30);
         btnCancelar.addActionListener(e -> {
             new ListaUsuarios(nombreUsuarioActual, rolUsuarioActual).setVisible(true);
             dispose();
@@ -132,13 +142,9 @@ public class EditarUsuario extends JFrame {
         txtNombre.setVisible(esProfesor || esAlumno);
         txtApellido.setVisible(esProfesor || esAlumno);
         txtDni.setVisible(esProfesor || esAlumno);
-
         txtEspecialidad.setVisible(esProfesor);
 
-        // También ocultar/mostrar labels (buscamos por posición)
-        // Simplificación: asumimos labels están en el orden fijo:
-        Component[] comps = getContentPane().getComponents();
-        for (Component c : comps) {
+        for (Component c : getContentPane().getComponents()) {
             if (c instanceof JLabel) {
                 JLabel l = (JLabel) c;
                 switch (l.getText()) {
@@ -180,21 +186,25 @@ public class EditarUsuario extends JFrame {
         usuario.setUsuario(txtUsuario.getText().trim());
         usuario.setEmail(txtEmail.getText().trim());
         usuario.setPass(new String(txtPass.getPassword()));
-        usuario.setRol(comboRol.getSelectedIndex());
+
+        int nuevoRol = comboRol.getSelectedIndex();
+        usuario.setRol(nuevoRol);
 
         String nombre = txtNombre.getText().trim();
         String apellido = txtApellido.getText().trim();
         String dni = txtDni.getText().trim();
         String especialidad = txtEspecialidad.getText().trim();
 
-        boolean exito = controlador.updateUserWithDetails(usuario,
-                usuario.getRol() == 1 ? nombre : null,
-                usuario.getRol() == 1 ? apellido : null,
-                usuario.getRol() == 1 ? dni : null,
-                usuario.getRol() == 1 ? especialidad : null,
-                usuario.getRol() == 2 ? nombre : null,
-                usuario.getRol() == 2 ? apellido : null,
-                usuario.getRol() == 2 ? dni : null);
+        boolean exito = controlador.updateUserWithDetails(
+            usuario,
+            nuevoRol == 1 ? nombre : null,
+            nuevoRol == 1 ? apellido : null,
+            nuevoRol == 1 ? dni : null,
+            nuevoRol == 1 ? especialidad : null,
+            nuevoRol == 2 ? nombre : null,
+            nuevoRol == 2 ? apellido : null,
+            nuevoRol == 2 ? dni : null
+        );
 
         if (exito) {
             JOptionPane.showMessageDialog(this, "Usuario actualizado correctamente.");

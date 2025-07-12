@@ -3,7 +3,7 @@ package Modelos;
 public class Respuesta {
 
     private int id;
-    private int idEjercicio; // FK al ejercicio al que pertenece
+    private int idEjercicio; 
     private String respuesta;
     private boolean esCorrecta;
 
