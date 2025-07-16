@@ -28,24 +28,35 @@ public class ClasesCurso extends JFrame {
         this.nombreUsuario = nombreUsuario;
         this.rol = rol;
 
-        setTitle("Clases del Curso: " + curso.getNombreCurso());
-        setSize(1000, 600);
+        setTitle("Clases del Curso");
+        setSize(1000, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
-        // --- Títulos
-        JLabel lblTitulo = new JLabel("Clases del Curso: " + curso.getNombreCurso(), SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 20));
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
 
-        JLabel lblInstruccion = new JLabel("Hacé doble clic sobre una clase para ver el examen asociado", SwingConstants.CENTER);
-        lblInstruccion.setFont(new Font("Arial", Font.ITALIC, 14));
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-26, -8, 235, 98);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgEscalada = icono.getImage().getScaledInstance(250, 140, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imgEscalada));
+        contentPane.add(lblLogo);
+
+        JLabel lblTitulo = new JLabel("Clases del Curso: " + curso.getNombreCurso());
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 28));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(300, 20, 700, 40);
+        contentPane.add(lblTitulo);
+
+        JLabel lblInstruccion = new JLabel("Hacé doble clic sobre una clase para ver o crear el examen");
+        lblInstruccion.setFont(new Font("Ebrima", Font.ITALIC, 16));
         lblInstruccion.setForeground(Color.DARK_GRAY);
-
-        JPanel panelTitulo = new JPanel(new GridLayout(2, 1));
-        panelTitulo.add(lblTitulo);
-        panelTitulo.add(lblInstruccion);
-        add(panelTitulo, BorderLayout.NORTH);
+        lblInstruccion.setBounds(300, 60, 600, 30);
+        contentPane.add(lblInstruccion);
 
         claseControlador = new ClaseControlador();
         usuarioControlador = new UsuarioControlador();
@@ -58,9 +69,41 @@ public class ClasesCurso extends JFrame {
 
         tablaClases = new JTable(modeloClases);
         tablaClases.setRowHeight(30);
+        tablaClases.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        tablaClases.getTableHeader().setFont(new Font("Ebrima", Font.BOLD, 14));
         cargarClases();
 
-        // Doble clic para ver examen o crear si no existe
+        JScrollPane scrollPane = new JScrollPane(tablaClases);
+        scrollPane.setBounds(50, 110, 890, 300);
+        contentPane.add(scrollPane);
+
+        Font fuenteBoton = new Font("Ebrima", Font.PLAIN, 16);
+
+        JButton btnAgregar = new JButton("Agregar Clase");
+        btnAgregar.setFont(fuenteBoton);
+        btnAgregar.setBounds(100, 430, 170, 35);
+        contentPane.add(btnAgregar);
+
+        JButton btnEditar = new JButton("Editar Clase");
+        btnEditar.setFont(fuenteBoton);
+        btnEditar.setBounds(290, 430, 170, 35);
+        contentPane.add(btnEditar);
+
+        JButton btnEliminar = new JButton("Eliminar Clase");
+        btnEliminar.setFont(fuenteBoton);
+        btnEliminar.setBounds(480, 430, 170, 35);
+        contentPane.add(btnEliminar);
+
+        JButton btnVerAlumnos = new JButton("Ver Alumnos");
+        btnVerAlumnos.setFont(fuenteBoton);
+        btnVerAlumnos.setBounds(670, 430, 170, 35);
+        contentPane.add(btnVerAlumnos);
+
+        JButton btnVolver = new JButton("Volver");
+        btnVolver.setFont(fuenteBoton);
+        btnVolver.setBounds(400, 500, 200, 40);
+        contentPane.add(btnVolver);
+
         tablaClases.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -73,8 +116,7 @@ public class ClasesCurso extends JFrame {
                             if (examenControlador.obtenerExamenPorIdClase(claseSeleccionada.getId()) != null) {
                                 new VerExamen(claseSeleccionada).setVisible(true);
                             } else {
-                                CrearExamen crearExamen = new CrearExamen(claseSeleccionada);
-                                crearExamen.setVisible(true);
+                                new CrearExamen(claseSeleccionada).setVisible(true);
                             }
                         }
                     }
@@ -82,28 +124,11 @@ public class ClasesCurso extends JFrame {
             }
         });
 
-        JScrollPane scrollPane = new JScrollPane(tablaClases);
-        add(scrollPane, BorderLayout.CENTER);
-
-        // Botones
-        JButton btnAgregar = new JButton("Agregar Clase");
-        JButton btnEditar = new JButton("Editar Clase");
-        JButton btnEliminar = new JButton("Eliminar Clase");
-        JButton btnVerAlumnos = new JButton("Ver Alumnos");
-        JButton btnVolver = new JButton("Volver");
-
-        Dimension btnSize = new Dimension(130, 30);
-        btnAgregar.setPreferredSize(btnSize);
-        btnEditar.setPreferredSize(btnSize);
-        btnEliminar.setPreferredSize(btnSize);
-        btnVerAlumnos.setPreferredSize(btnSize);
-        btnVolver.setPreferredSize(btnSize);
-
         btnAgregar.addActionListener(e -> {
             AgregarClase agregarClase = new AgregarClase(curso);
             agregarClase.setVisible(true);
             agregarClase.addWindowListener(new java.awt.event.WindowAdapter() {
-                public void windowClosed(java.awt.event.WindowEvent e) {
+                public void windowClosed(java.awt.event.WindowEvent e2) {
                     cargarClases();
                 }
             });
@@ -118,7 +143,7 @@ public class ClasesCurso extends JFrame {
                     EditarClase editarClase = new EditarClase(claseSeleccionada);
                     editarClase.setVisible(true);
                     editarClase.addWindowListener(new java.awt.event.WindowAdapter() {
-                        public void windowClosed(java.awt.event.WindowEvent e) {
+                        public void windowClosed(java.awt.event.WindowEvent e2) {
                             cargarClases();
                         }
                     });
@@ -144,18 +169,11 @@ public class ClasesCurso extends JFrame {
         });
 
         btnVerAlumnos.addActionListener(e -> mostrarAlumnosInscriptos());
+
         btnVolver.addActionListener(e -> {
             new MisCursos(nombreUsuario, rol).setVisible(true);
             dispose();
         });
-
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        panelBotones.add(btnAgregar);
-        panelBotones.add(btnEditar);
-        panelBotones.add(btnEliminar);
-        panelBotones.add(btnVerAlumnos);
-        panelBotones.add(btnVolver);
-        add(panelBotones, BorderLayout.SOUTH);
     }
 
     private void cargarClases() {
@@ -164,7 +182,7 @@ public class ClasesCurso extends JFrame {
         for (Clase c : clases) {
             modeloClases.addRow(new Object[]{c.getTitulo(), c.getTema(), c.getFechaCreacion(), c.getContenido()});
         }
-        tablaClases.getColumnModel().getColumn(3).setPreferredWidth(400); // contenido
+        tablaClases.getColumnModel().getColumn(3).setPreferredWidth(400);
     }
 
     private void mostrarAlumnosInscriptos() {

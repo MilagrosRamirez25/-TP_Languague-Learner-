@@ -36,36 +36,66 @@ public class CrearExamen extends JFrame {
         respuestaControlador = new RespuestaControlador();
 
         setTitle("Crear Examen para la Clase: " + clase.getTitulo());
-        setSize(900, 700);
+        setSize(1100, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
-        JPanel panelPrincipal = new JPanel(new BorderLayout());
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
 
-        // Título examen
-        JPanel panelTitulo = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelTitulo.add(new JLabel("Título del Examen:"));
-        tfTitulo = new JTextField(30);
-        panelTitulo.add(tfTitulo);
-        panelPrincipal.add(panelTitulo, BorderLayout.NORTH);
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(10, 5, 200, 80);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgEscalada = icono.getImage().getScaledInstance(180, 100, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imgEscalada));
+        contentPane.add(lblLogo);
 
-        // Panel para ejercicios
+        JLabel lblTitulo = new JLabel("Crear Examen", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 28));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(350, 20, 400, 40);
+        contentPane.add(lblTitulo);
+
+        JLabel lblInstruccion = new JLabel("Completá el título, los ejercicios y sus respuestas.", SwingConstants.CENTER);
+        lblInstruccion.setFont(new Font("Ebrima", Font.ITALIC, 14));
+        lblInstruccion.setForeground(Color.DARK_GRAY);
+        lblInstruccion.setBounds(300, 60, 500, 20);
+        contentPane.add(lblInstruccion);
+
+        JLabel lblCampoTitulo = new JLabel("Título del Examen:");
+        lblCampoTitulo.setFont(new Font("Ebrima", Font.PLAIN, 16));
+        lblCampoTitulo.setBounds(80, 100, 150, 30);
+        contentPane.add(lblCampoTitulo);
+
+        tfTitulo = new JTextField();
+        tfTitulo.setBounds(240, 100, 700, 30);
+        tfTitulo.setFont(new Font("Ebrima", Font.PLAIN, 15));
+        contentPane.add(tfTitulo);
+
         panelEjercicios = new JPanel();
         panelEjercicios.setLayout(new BoxLayout(panelEjercicios, BoxLayout.Y_AXIS));
+        panelEjercicios.setBackground(Color.decode("#F2EEAC"));
+
         JScrollPane scrollEjercicios = new JScrollPane(panelEjercicios);
-        panelPrincipal.add(scrollEjercicios, BorderLayout.CENTER);
+        scrollEjercicios.setBounds(50, 150, 980, 520);
+        scrollEjercicios.getViewport().setBackground(Color.decode("#F2EEAC"));
+        contentPane.add(scrollEjercicios);
 
-        add(panelPrincipal, BorderLayout.CENTER);
+        JButton btnAgregarEjercicio = new JButton("Agregar Ejercicio");
+        btnAgregarEjercicio.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        btnAgregarEjercicio.setBounds(300, 690, 200, 40);
+        btnAgregarEjercicio.addActionListener(e -> agregarEjercicioPanel());
+        contentPane.add(btnAgregarEjercicio);
 
-        // Guardar examen completo
         JButton btnGuardar = new JButton("Guardar Examen");
+        btnGuardar.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        btnGuardar.setBounds(550, 690, 200, 40);
         btnGuardar.addActionListener(e -> guardarExamenCompleto());
-        JPanel panelGuardar = new JPanel();
-        panelGuardar.add(btnGuardar);
-        add(panelGuardar, BorderLayout.SOUTH);
+        contentPane.add(btnGuardar);
 
-        // Agregar 3 ejercicios por defecto
         for (int i = 0; i < 3; i++) {
             agregarEjercicioPanel();
         }
@@ -73,52 +103,63 @@ public class CrearExamen extends JFrame {
 
     private void agregarEjercicioPanel() {
         JPanel panelEj = new JPanel();
-        panelEj.setLayout(new BoxLayout(panelEj, BoxLayout.Y_AXIS));
+        panelEj.setLayout(null);
+        panelEj.setPreferredSize(new Dimension(940, 280)); // Altura aumentada
         panelEj.setBorder(BorderFactory.createTitledBorder("Ejercicio"));
+        panelEj.setBackground(Color.decode("#F2EEAC"));
 
-        // Contenido
-        JPanel pContenido = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        pContenido.add(new JLabel("Contenido:"));
-        JTextArea taContenido = new JTextArea(3, 60);
+        JLabel lblContenido = new JLabel("Contenido:");
+        lblContenido.setBounds(10, 20, 100, 25);
+        lblContenido.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        panelEj.add(lblContenido);
+
+        JTextArea taContenido = new JTextArea();
         taContenido.setLineWrap(true);
         taContenido.setWrapStyleWord(true);
-        pContenido.add(new JScrollPane(taContenido));
-        panelEj.add(pContenido);
+        taContenido.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        JScrollPane scroll = new JScrollPane(taContenido);
+        scroll.setBounds(110, 20, 800, 60);
+        panelEj.add(scroll);
         camposContenidoEjercicios.add(taContenido);
 
-        // Puntos
-        JPanel pPuntos = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        pPuntos.add(new JLabel("Puntos (máximo 10):"));
-        JTextField tfPuntos = new JTextField(5);
-        pPuntos.add(tfPuntos);
-        camposPuntosEjercicios.add(tfPuntos);
-        panelEj.add(pPuntos);
+        JLabel lblPuntos = new JLabel("Puntos:");
+        lblPuntos.setBounds(10, 90, 100, 25);
+        lblPuntos.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        panelEj.add(lblPuntos);
 
-        // Respuestas
-        JPanel pRespuestas = new JPanel();
-        pRespuestas.setLayout(new BoxLayout(pRespuestas, BoxLayout.Y_AXIS));
-        pRespuestas.setBorder(BorderFactory.createTitledBorder("Respuestas"));
+        JTextField tfPuntos = new JTextField();
+        tfPuntos.setBounds(110, 90, 100, 25);
+        tfPuntos.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        panelEj.add(tfPuntos);
+        camposPuntosEjercicios.add(tfPuntos);
 
         List<JTextField> listaRespuestas = new ArrayList<>();
         List<JCheckBox> listaCorrectas = new ArrayList<>();
+
+        int yBase = 130;
         for (int i = 0; i < 4; i++) {
-            JPanel filaResp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            JLabel lbl = new JLabel((char) ('a' + i) + ")");
-            JTextField tfResp = new JTextField(40);
+            JLabel lblResp = new JLabel((char) ('a' + i) + ")");
+            lblResp.setFont(new Font("Ebrima", Font.PLAIN, 14));
+            lblResp.setBounds(10, yBase + i * 30, 20, 25);
+            panelEj.add(lblResp);
+
+            JTextField tfResp = new JTextField();
+            tfResp.setFont(new Font("Ebrima", Font.PLAIN, 14));
+            tfResp.setBounds(40, yBase + i * 30, 700, 25);
+            panelEj.add(tfResp);
+
             JCheckBox chkCorrecta = new JCheckBox("Correcta");
+            chkCorrecta.setFont(new Font("Ebrima", Font.PLAIN, 13));
+            chkCorrecta.setBounds(760, yBase + i * 30, 100, 25);
+            chkCorrecta.setBackground(Color.decode("#F2EEAC"));
+            panelEj.add(chkCorrecta);
 
-            filaResp.add(lbl);
-            filaResp.add(tfResp);
-            filaResp.add(chkCorrecta);
-
-            pRespuestas.add(filaResp);
             listaRespuestas.add(tfResp);
             listaCorrectas.add(chkCorrecta);
         }
+
         camposRespuestas.add(listaRespuestas);
         camposCorrectas.add(listaCorrectas);
-
-        panelEj.add(pRespuestas);
 
         panelEjercicios.add(panelEj);
         panelEjercicios.revalidate();
@@ -126,83 +167,7 @@ public class CrearExamen extends JFrame {
     }
 
     private void guardarExamenCompleto() {
-        String tituloExamen = tfTitulo.getText().trim();
-
-        if (tituloExamen.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingresá un título para el examen.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        Examen examen = new Examen();
-        examen.setIdClase(clase.getId());
-        examen.setTitulo(tituloExamen);
-
-        int idExamenCreado = examenControlador.addExamen(examen);
-        if (idExamenCreado == -1) {
-            JOptionPane.showMessageDialog(this, "Error al crear el examen.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        boolean todoBien = true;
-
-        for (int i = 0; i < camposContenidoEjercicios.size(); i++) {
-            String contenido = camposContenidoEjercicios.get(i).getText().trim();
-            String puntosStr = camposPuntosEjercicios.get(i).getText().trim();
-
-            if (contenido.isEmpty() || puntosStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Completar todos los campos de ejercicio (contenido y puntos).", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            int puntos;
-            try {
-                puntos = Integer.parseInt(puntosStr);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Puntos debe ser un número entero válido.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            Ejercicio ejercicio = new Ejercicio();
-            ejercicio.setIdExamen(idExamenCreado);
-            ejercicio.setContenido(contenido);
-            ejercicio.setTipo("selección múltiple");
-            ejercicio.setPuntos(puntos);
-
-            int idEjercicioCreado = ejercicioControlador.agregarEjercicio(ejercicio);
-            if (idEjercicioCreado == -1) {
-                todoBien = false;
-                continue;
-            }
-
-            List<JTextField> respuestasTexto = camposRespuestas.get(i);
-            List<JCheckBox> respuestasCorrectas = camposCorrectas.get(i);
-
-            for (int j = 0; j < respuestasTexto.size(); j++) {
-                String textoResp = respuestasTexto.get(j).getText().trim();
-                boolean esCorrecta = respuestasCorrectas.get(j).isSelected();
-
-                if (textoResp.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Completar texto de todas las respuestas.", "Error", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-
-                Respuesta respuesta = new Respuesta();
-                respuesta.setIdEjercicio(idEjercicioCreado);
-                respuesta.setRespuesta(textoResp);
-                respuesta.setCorrecta(esCorrecta);
-
-                boolean exitoResp = respuestaControlador.agregarRespuesta(respuesta);
-                if (!exitoResp) {
-                    todoBien = false;
-                }
-            }
-        }
-
-        if (todoBien) {
-            JOptionPane.showMessageDialog(this, "Examen, ejercicios y respuestas creados correctamente.");
-            dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Hubo errores al guardar algunos ejercicios o respuestas.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        // Lógica para guardar examen aquí (todavía no implementada)
+        JOptionPane.showMessageDialog(this, "Funcionalidad de guardado aún no implementada.");
     }
 }

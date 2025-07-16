@@ -16,58 +16,126 @@ public class PerfilProfesor extends JFrame {
         this.rol = rol;
 
         setTitle("Perfil del Profesor");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 300);
+        setSize(480, 400);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout(10, 10));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
-        JLabel titulo = new JLabel("Mi Perfil", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 22));
-        add(titulo, BorderLayout.NORTH);
+        JPanel contentPane = new JPanel(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
+
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgOriginal = icono.getImage();
+        int maxWidth = 120;
+        int ancho = imgOriginal.getWidth(null);
+        int alto = imgOriginal.getHeight(null);
+        int altoEscalado = (alto * maxWidth) / ancho;
+        Image imgEscalada = imgOriginal.getScaledInstance(maxWidth, altoEscalado, Image.SCALE_SMOOTH);
+        JLabel lblLogo = new JLabel(new ImageIcon(imgEscalada));
+        lblLogo.setBounds(10, -33, maxWidth, altoEscalado);
+        contentPane.add(lblLogo);
+
+        JLabel lblTitulo = new JLabel("Mi Perfil");
+        lblTitulo.setFont(new Font("Ebrima", Font.BOLD, 26));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(115, -16, 200, 40);
+        contentPane.add(lblTitulo);
 
         UsuarioControlador usuarioControlador = new UsuarioControlador();
         int idUsuario = usuarioControlador.obtenerIdPorNombreUsuario(nombreUsuario);
         Profesor profesor = usuarioControlador.getProfesorByUserId(idUsuario);
 
-        JPanel panelDatos = new JPanel(new GridLayout(6, 2, 10, 10));
-        panelDatos.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        Font fuenteEtiqueta = new Font("Ebrima", Font.BOLD, 16);
+        Font fuenteValor = new Font("Ebrima", Font.PLAIN, 16);
 
-        panelDatos.add(new JLabel("Nombre:"));
-        panelDatos.add(new JLabel(profesor.getNombre()));
+        int etiquetaX = 30;
+        int valorX = 160;
+        int yBase = 80;
+        int espacioY = 35;
 
-        panelDatos.add(new JLabel("Apellido:"));
-        panelDatos.add(new JLabel(profesor.getApellido()));
+        JLabel lblNombre = new JLabel("Nombre:");
+        lblNombre.setFont(fuenteEtiqueta);
+        lblNombre.setBounds(etiquetaX, yBase, 120, 25);
+        contentPane.add(lblNombre);
 
-        panelDatos.add(new JLabel("DNI:"));
-        panelDatos.add(new JLabel(profesor.getDni()));
+        JLabel valNombre = new JLabel(profesor.getNombre());
+        valNombre.setFont(fuenteValor);
+        valNombre.setBounds(valorX, yBase, 250, 25);
+        contentPane.add(valNombre);
 
-        panelDatos.add(new JLabel("Especialidad:"));
-        panelDatos.add(new JLabel(profesor.getEspecialidad()));
+        JLabel lblApellido = new JLabel("Apellido:");
+        lblApellido.setFont(fuenteEtiqueta);
+        lblApellido.setBounds(etiquetaX, yBase + espacioY, 120, 25);
+        contentPane.add(lblApellido);
 
-        panelDatos.add(new JLabel("Usuario:"));
-        panelDatos.add(new JLabel(profesor.getUsuario()));
+        JLabel valApellido = new JLabel(profesor.getApellido());
+        valApellido.setFont(fuenteValor);
+        valApellido.setBounds(valorX, yBase + espacioY, 250, 25);
+        contentPane.add(valApellido);
 
-        panelDatos.add(new JLabel("Contraseña:"));
-        panelDatos.add(new JLabel("********")); 
+        JLabel lblDni = new JLabel("DNI:");
+        lblDni.setFont(fuenteEtiqueta);
+        lblDni.setBounds(etiquetaX, yBase + 2 * espacioY, 120, 25);
+        contentPane.add(lblDni);
 
-        add(panelDatos, BorderLayout.CENTER);
+        JLabel valDni = new JLabel(profesor.getDni());
+        valDni.setFont(fuenteValor);
+        valDni.setBounds(valorX, yBase + 2 * espacioY, 250, 25);
+        contentPane.add(valDni);
 
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        JLabel lblEspecialidad = new JLabel("Especialidad:");
+        lblEspecialidad.setFont(fuenteEtiqueta);
+        lblEspecialidad.setBounds(etiquetaX, yBase + 3 * espacioY, 120, 25);
+        contentPane.add(lblEspecialidad);
+
+        JLabel valEspecialidad = new JLabel(profesor.getEspecialidad());
+        valEspecialidad.setFont(fuenteValor);
+        valEspecialidad.setBounds(valorX, yBase + 3 * espacioY, 250, 25);
+        contentPane.add(valEspecialidad);
+
+        JLabel lblUsuario = new JLabel("Usuario:");
+        lblUsuario.setFont(fuenteEtiqueta);
+        lblUsuario.setBounds(etiquetaX, yBase + 4 * espacioY, 120, 25);
+        contentPane.add(lblUsuario);
+
+        JLabel valUsuario = new JLabel(profesor.getUsuario());
+        valUsuario.setFont(fuenteValor);
+        valUsuario.setBounds(valorX, yBase + 4 * espacioY, 250, 25);
+        contentPane.add(valUsuario);
+
+        JLabel lblPass = new JLabel("Contraseña:");
+        lblPass.setFont(fuenteEtiqueta);
+        lblPass.setBounds(etiquetaX, yBase + 5 * espacioY, 120, 25);
+        contentPane.add(lblPass);
+
+        JLabel valPass = new JLabel("********");
+        valPass.setFont(fuenteValor);
+        valPass.setBounds(valorX, yBase + 5 * espacioY, 250, 25);
+        contentPane.add(valPass);
+
         JButton btnEditar = new JButton("Editar perfil");
-        JButton btnVolver = new JButton("Volver");
-
+        btnEditar.setFont(new Font("Ebrima", Font.BOLD, 16));
+        btnEditar.setBackground(Color.WHITE);
+        btnEditar.setForeground(new Color(0, 83, 166));
+        btnEditar.setFocusPainted(false);
+        btnEditar.setBounds(100, yBase + 7 * espacioY, 130, 40);
         btnEditar.addActionListener(e -> {
             new EditarPerfilProfesor(profesor).setVisible(true);
             dispose();
         });
+        contentPane.add(btnEditar);
 
+        JButton btnVolver = new JButton("Volver");
+        btnVolver.setFont(new Font("Ebrima", Font.BOLD, 16));
+        btnVolver.setBackground(Color.WHITE);
+        btnVolver.setForeground(new Color(0, 83, 166));
+        btnVolver.setFocusPainted(false);
+        btnVolver.setBounds(260, yBase + 7 * espacioY, 130, 40);
         btnVolver.addActionListener(e -> {
             new PantallaHome(nombreUsuario, rol).setVisible(true);
             dispose();
         });
-
-        panelBotones.add(btnEditar);
-        panelBotones.add(btnVolver);
-        add(panelBotones, BorderLayout.SOUTH);
+        contentPane.add(btnVolver);
     }
 }

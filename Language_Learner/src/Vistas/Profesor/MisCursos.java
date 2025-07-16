@@ -15,22 +15,34 @@ public class MisCursos extends JFrame {
 
     public MisCursos(String nombreUsuario, int rol) {
         setTitle("Mis Cursos");
-        setSize(900, 400);
+        setSize(900, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setLayout(null);
+
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
+
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-10, 5, 200, 80);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgEscalada = icono.getImage().getScaledInstance(220, 130, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imgEscalada));
+        contentPane.add(lblLogo);
 
         JLabel lblTitulo = new JLabel("Mis Cursos", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 30));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(300, 20, 400, 40);
+        contentPane.add(lblTitulo);
 
         JLabel lblInstruccion = new JLabel("Hacé doble clic sobre un curso para ver sus clases", SwingConstants.CENTER);
-        lblInstruccion.setFont(new Font("Arial", Font.ITALIC, 14));
+        lblInstruccion.setFont(new Font("Ebrima", Font.ITALIC, 14));
         lblInstruccion.setForeground(Color.DARK_GRAY);
-
-        JPanel panelTitulo = new JPanel(new GridLayout(2, 1));
-        panelTitulo.add(lblTitulo);
-        panelTitulo.add(lblInstruccion);
-        add(panelTitulo, BorderLayout.NORTH);
+        lblInstruccion.setBounds(250, 60, 500, 20);
+        contentPane.add(lblInstruccion);
 
         cursoControlador = new CursoControlador();
         int idProfesor = new Controladores.UsuarioControlador().obtenerIdPorNombreUsuario(nombreUsuario);
@@ -45,6 +57,8 @@ public class MisCursos extends JFrame {
 
         tabla = new JTable(modelo);
         tabla.setRowHeight(30);
+        tabla.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        tabla.getTableHeader().setFont(new Font("Ebrima", Font.BOLD, 14));
 
         tabla.getColumnModel().getColumn(0).setPreferredWidth(150);
         tabla.getColumnModel().getColumn(1).setPreferredWidth(500);
@@ -54,17 +68,19 @@ public class MisCursos extends JFrame {
             modelo.addRow(new Object[]{c.getNombreCurso(), c.getDescripcion(), c.getFechaInicio()});
         }
 
-        add(new JScrollPane(tabla), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(tabla);
+        scrollPane.setBounds(60, 100, 770, 280);
+        contentPane.add(scrollPane);
 
         JButton btnVolver = new JButton("Volver");
+        btnVolver.setFont(new Font("Ebrima", Font.PLAIN, 15));
+        btnVolver.setBounds(370, 400, 140, 35);
+        contentPane.add(btnVolver);
+
         btnVolver.addActionListener(e -> {
             new Vistas.PantallaHome(nombreUsuario, rol).setVisible(true);
             dispose();
         });
-
-        JPanel panelInferior = new JPanel();
-        panelInferior.add(btnVolver);
-        add(panelInferior, BorderLayout.SOUTH);
 
         tabla.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

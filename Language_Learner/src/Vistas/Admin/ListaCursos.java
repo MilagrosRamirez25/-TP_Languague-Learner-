@@ -22,15 +22,34 @@ public class ListaCursos extends JFrame {
     public ListaCursos(String nombreUsuario, int rolUsuario) {
         this.nombreUsuario = nombreUsuario;
         this.rolUsuario = rolUsuario;
-
         controlador = new CursoControlador();
 
         setTitle("Lista de Cursos");
-        setSize(800, 450);
+        setSize(900, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
+
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-17, 10, 219, 73);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imagenEscalada = icono.getImage().getScaledInstance(250, 140, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imagenEscalada));
+        contentPane.add(lblLogo);
+
+
+        JLabel lblTitulo = new JLabel("Lista de Cursos");
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 30));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(300, 30, 400, 50);
+        contentPane.add(lblTitulo);
+
+        // tabala
         String[] columnas = {"ID", "Nombre", "Profesor", "Descripción", "Fecha Inicio", "Capacidad Máxima", "Alumnos Inscritos"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
@@ -40,18 +59,23 @@ public class ListaCursos extends JFrame {
         };
 
         tablaCursos = new JTable(modeloTabla);
-        // Ajuste de anchos:
-        tablaCursos.getColumnModel().getColumn(0).setPreferredWidth(30);  // ID
-        tablaCursos.getColumnModel().getColumn(1).setPreferredWidth(140); // Nombre
-        tablaCursos.getColumnModel().getColumn(2).setPreferredWidth(140); // Profesor (más ancho para nombre + apellido)
-        tablaCursos.getColumnModel().getColumn(3).setPreferredWidth(320); // Descripción
-        tablaCursos.getColumnModel().getColumn(4).setPreferredWidth(90);  // Fecha Inicio
-        tablaCursos.getColumnModel().getColumn(5).setPreferredWidth(140); // Capacidad Máxima
-        tablaCursos.getColumnModel().getColumn(6).setPreferredWidth(130); // Alumnos Inscritos
+        tablaCursos.getColumnModel().getColumn(0).setPreferredWidth(30);   // ID
+        tablaCursos.getColumnModel().getColumn(1).setPreferredWidth(120);  // Nombre
+        tablaCursos.getColumnModel().getColumn(2).setPreferredWidth(140);  // Profesor
+        tablaCursos.getColumnModel().getColumn(3).setPreferredWidth(250);  // Descripción
+        tablaCursos.getColumnModel().getColumn(4).setPreferredWidth(100);  // Fecha
+        tablaCursos.getColumnModel().getColumn(5).setPreferredWidth(110);  // Capacidad
+        tablaCursos.getColumnModel().getColumn(6).setPreferredWidth(130);  // Inscritos
+
         JScrollPane scrollPane = new JScrollPane(tablaCursos);
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBounds(20, 120, 850, 250);
+        contentPane.add(scrollPane);
 
         JPanel panelBotones = new JPanel();
+        panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        panelBotones.setBounds(20, 390, 850, 50);
+        panelBotones.setBackground(Color.decode("#F2EEAC"));
+
         JButton btnAgregar = new JButton("Agregar");
         JButton btnEditar = new JButton("Editar");
         JButton btnEliminar = new JButton("Eliminar");
@@ -64,7 +88,7 @@ public class ListaCursos extends JFrame {
         panelBotones.add(btnActualizar);
         panelBotones.add(btnVolver);
 
-        add(panelBotones, BorderLayout.SOUTH);
+        contentPane.add(panelBotones);
 
         cargarCursos();
 
@@ -123,7 +147,6 @@ public class ListaCursos extends JFrame {
         modeloTabla.setRowCount(0);
 
         for (Curso c : cursos) {
-            // Aquí llamamos al método que concatena nombre + apellido del profesor
             String nombreProfesor = controlador.obtenerNombreCompletoProfesorPorId(c.getIdProfesor());
             Object[] fila = {
                 c.getId(),

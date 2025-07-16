@@ -19,60 +19,86 @@ public class EditarClase extends JFrame {
         claseControlador = new ClaseControlador();
 
         setTitle("Editar Clase - " + clase.getTitulo());
-        setSize(500, 450);
+        setSize(600, 520);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
-        JPanel panelFormulario = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5,5,5,5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
 
-        // Título
-        gbc.gridx = 0; gbc.gridy = 0;
-        panelFormulario.add(new JLabel("Título:"), gbc);
-        tfTitulo = new JTextField(clase.getTitulo(), 30);
-        gbc.gridx = 1;
-        panelFormulario.add(tfTitulo, gbc);
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-20, -5, 220, 80);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgEscalada = icono.getImage().getScaledInstance(230, 130, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imgEscalada));
+        contentPane.add(lblLogo);
 
-        // Tema
-        gbc.gridx = 0; gbc.gridy = 1;
-        panelFormulario.add(new JLabel("Tema:"), gbc);
-        tfTema = new JTextField(clase.getTema(), 30);
-        gbc.gridx = 1;
-        panelFormulario.add(tfTema, gbc);
+        JLabel lblTituloPantalla = new JLabel("Editar Clase", SwingConstants.CENTER);
+        lblTituloPantalla.setFont(new Font("Ebrima", Font.BOLD, 24));
+        lblTituloPantalla.setForeground(new Color(0, 83, 166));
+        lblTituloPantalla.setBounds(180, 30, 300, 40);
+        contentPane.add(lblTituloPantalla);
 
-        // Contenido
-        gbc.gridx = 0; gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.NORTH;
-        panelFormulario.add(new JLabel("Contenido:"), gbc);
-        taContenido = new JTextArea(clase.getContenido(), 8, 30);
-        gbc.gridx = 1;
+        Font fuente = new Font("Ebrima", Font.PLAIN, 15);
+
+        JLabel lblTitulo = new JLabel("Título:");
+        lblTitulo.setFont(fuente);
+        lblTitulo.setBounds(60, 100, 100, 25);
+        contentPane.add(lblTitulo);
+
+        tfTitulo = new JTextField(clase.getTitulo());
+        tfTitulo.setFont(fuente);
+        tfTitulo.setBounds(160, 100, 360, 25);
+        contentPane.add(tfTitulo);
+
+        JLabel lblTema = new JLabel("Tema:");
+        lblTema.setFont(fuente);
+        lblTema.setBounds(60, 140, 100, 25);
+        contentPane.add(lblTema);
+
+        tfTema = new JTextField(clase.getTema());
+        tfTema.setFont(fuente);
+        tfTema.setBounds(160, 140, 360, 25);
+        contentPane.add(tfTema);
+
+        JLabel lblContenido = new JLabel("Contenido:");
+        lblContenido.setFont(fuente);
+        lblContenido.setBounds(60, 180, 100, 25);
+        contentPane.add(lblContenido);
+
+        taContenido = new JTextArea(clase.getContenido());
+        taContenido.setFont(fuente);
+        taContenido.setLineWrap(true);
+        taContenido.setWrapStyleWord(true);
+
         JScrollPane spContenido = new JScrollPane(taContenido);
-        panelFormulario.add(spContenido, gbc);
+        spContenido.setBounds(160, 180, 360, 120);
+        contentPane.add(spContenido);
 
-        // Autor
-        gbc.gridx = 0; gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.WEST;
-        panelFormulario.add(new JLabel("Autor:"), gbc);
-        tfAutor = new JTextField(clase.getAutor(), 30);
-        gbc.gridx = 1;
-        panelFormulario.add(tfAutor, gbc);
+        JLabel lblAutor = new JLabel("Autor:");
+        lblAutor.setFont(fuente);
+        lblAutor.setBounds(60, 310, 100, 25);
+        contentPane.add(lblAutor);
 
-        add(panelFormulario, BorderLayout.CENTER);
+        tfAutor = new JTextField(clase.getAutor());
+        tfAutor.setFont(fuente);
+        tfAutor.setBounds(160, 310, 360, 25);
+        contentPane.add(tfAutor);
 
-        // Botones
-        JPanel panelBotones = new JPanel();
         JButton btnGuardar = new JButton("Guardar");
-        JButton btnCancelar = new JButton("Cancelar");
-
+        btnGuardar.setFont(fuente);
+        btnGuardar.setBounds(170, 380, 110, 35);
         btnGuardar.addActionListener(e -> guardarCambios());
-        btnCancelar.addActionListener(e -> dispose());
+        contentPane.add(btnGuardar);
 
-        panelBotones.add(btnGuardar);
-        panelBotones.add(btnCancelar);
-        add(panelBotones, BorderLayout.SOUTH);
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setFont(fuente);
+        btnCancelar.setBounds(320, 380, 110, 35);
+        btnCancelar.addActionListener(e -> dispose());
+        contentPane.add(btnCancelar);
     }
 
     private void guardarCambios() {

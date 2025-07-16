@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class AgregarClase extends JFrame {
+
     private JTextField tfTitulo;
     private JTextField tfTema;
     private JTextArea taContenido;
@@ -17,63 +18,93 @@ public class AgregarClase extends JFrame {
 
     public AgregarClase(Curso curso) {
         this.curso = curso;
-        claseControlador = new ClaseControlador();
+        this.claseControlador = new ClaseControlador();
 
-        setTitle("Agregar Clase - Curso: " + curso.getNombreCurso());
-        setSize(500, 450);
+        setTitle("Agregar Clase");
+        setSize(650, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
-        JPanel panelFormulario = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5,5,5,5);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
 
-        // Título
-        gbc.gridx = 0; gbc.gridy = 0;
-        panelFormulario.add(new JLabel("Título:"), gbc);
-        tfTitulo = new JTextField(30);
-        gbc.gridx = 1;
-        panelFormulario.add(tfTitulo, gbc);
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(10, 5, 220, 80);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgEscalada = icono.getImage().getScaledInstance(180, 100, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imgEscalada));
+        contentPane.add(lblLogo);
 
-        // Tema
-        gbc.gridx = 0; gbc.gridy = 1;
-        panelFormulario.add(new JLabel("Tema:"), gbc);
-        tfTema = new JTextField(30);
-        gbc.gridx = 1;
-        panelFormulario.add(tfTema, gbc);
+        JLabel lblTituloPantalla = new JLabel("Agregar Clase al Curso: " + curso.getNombreCurso());
+        lblTituloPantalla.setFont(new Font("Eras Bold ITC", Font.BOLD, 22));
+        lblTituloPantalla.setForeground(new Color(0, 83, 166));
+        lblTituloPantalla.setBounds(182, 55, 506, 30);
+        contentPane.add(lblTituloPantalla);
 
-        // Contenido
-        gbc.gridx = 0; gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.NORTH;
-        panelFormulario.add(new JLabel("Contenido:"), gbc);
-        taContenido = new JTextArea(8, 30);
-        gbc.gridx = 1;
-        JScrollPane spContenido = new JScrollPane(taContenido);
-        panelFormulario.add(spContenido, gbc);
+        Font fuenteLabel = new Font("Ebrima", Font.BOLD, 16);
+        Font fuenteCampo = new Font("Ebrima", Font.PLAIN, 15);
 
-        // Autor
-        gbc.gridx = 0; gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.WEST;
-        panelFormulario.add(new JLabel("Autor:"), gbc);
-        tfAutor = new JTextField(30);
-        gbc.gridx = 1;
-        panelFormulario.add(tfAutor, gbc);
+        JLabel lblTitulo = new JLabel("Título:");
+        lblTitulo.setFont(fuenteLabel);
+        lblTitulo.setBounds(80, 100, 100, 25);
+        contentPane.add(lblTitulo);
 
-        add(panelFormulario, BorderLayout.CENTER);
+        tfTitulo = new JTextField();
+        tfTitulo.setFont(fuenteCampo);
+        tfTitulo.setBounds(180, 100, 370, 30);
+        contentPane.add(tfTitulo);
 
-        // Botones
-        JPanel panelBotones = new JPanel();
+        JLabel lblTema = new JLabel("Tema:");
+        lblTema.setFont(fuenteLabel);
+        lblTema.setBounds(80, 150, 100, 25);
+        contentPane.add(lblTema);
+
+        tfTema = new JTextField();
+        tfTema.setFont(fuenteCampo);
+        tfTema.setBounds(180, 150, 370, 30);
+        contentPane.add(tfTema);
+
+        JLabel lblContenido = new JLabel("Contenido:");
+        lblContenido.setFont(fuenteLabel);
+        lblContenido.setBounds(80, 200, 100, 25);
+        contentPane.add(lblContenido);
+
+        taContenido = new JTextArea();
+        taContenido.setFont(fuenteCampo);
+        taContenido.setLineWrap(true);
+        taContenido.setWrapStyleWord(true);
+
+        JScrollPane scrollContenido = new JScrollPane(taContenido);
+        scrollContenido.setBounds(180, 200, 370, 120);
+        contentPane.add(scrollContenido);
+
+        JLabel lblAutor = new JLabel("Autor:");
+        lblAutor.setFont(fuenteLabel);
+        lblAutor.setBounds(80, 340, 100, 25);
+        contentPane.add(lblAutor);
+
+        tfAutor = new JTextField();
+        tfAutor.setFont(fuenteCampo);
+        tfAutor.setBounds(180, 340, 370, 30);
+        contentPane.add(tfAutor);
+
         JButton btnGuardar = new JButton("Guardar");
         JButton btnCancelar = new JButton("Cancelar");
 
+        btnGuardar.setFont(fuenteCampo);
+        btnCancelar.setFont(fuenteCampo);
+
+        btnGuardar.setBounds(180, 420, 150, 40);
+        btnCancelar.setBounds(400, 420, 150, 40);
+
+        contentPane.add(btnGuardar);
+        contentPane.add(btnCancelar);
+
         btnGuardar.addActionListener(e -> guardarClase());
         btnCancelar.addActionListener(e -> dispose());
-
-        panelBotones.add(btnGuardar);
-        panelBotones.add(btnCancelar);
-        add(panelBotones, BorderLayout.SOUTH);
     }
 
     private void guardarClase() {
@@ -87,7 +118,15 @@ public class AgregarClase extends JFrame {
             return;
         }
 
-        Clase nuevaClase = new Clase(curso.getId(), titulo, tema, contenido, autor, java.time.LocalDate.now().toString());
+        Clase nuevaClase = new Clase(
+                curso.getId(),
+                titulo,
+                tema,
+                contenido,
+                autor,
+                java.time.LocalDate.now().toString()
+        );
+
         boolean exito = claseControlador.agregarClase(nuevaClase);
 
         if (exito) {

@@ -1,15 +1,9 @@
 package Vistas;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import java.awt.Font;
-import java.awt.Color;
+import java.awt.*;
 
 import Vistas.Admin.ListaCursos;
 import Vistas.Admin.ListaUsuarios;
@@ -38,98 +32,121 @@ public class PantallaHome extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 650, 450);
-        setLocationRelativeTo(null); 
+        setLocationRelativeTo(null);
 
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
         contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC")); 
         setContentPane(contentPane);
-       
+
         JLabel lblImagen = new JLabel();
-        lblImagen.setBounds(10, 20, 250, 140);  
-        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/img/bienvenida.jpg"));
+        lblImagen.setBounds(0, 0, 233, 84);
+        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/img/logo.png"));
         java.awt.Image scaledImage = originalIcon.getImage().getScaledInstance(250, 140, java.awt.Image.SCALE_SMOOTH);
         ImageIcon icon = new ImageIcon(scaledImage);
         lblImagen.setIcon(icon);
         contentPane.add(lblImagen);
 
         JLabel lblBienvenida = new JLabel("Bienvenido " + nombre);
-        lblBienvenida.setFont(new Font("Tahoma", Font.BOLD, 22));
-        lblBienvenida.setBounds(270, 50, 350, 29);
+        lblBienvenida.setForeground(new Color(37, 68, 175));
+        lblBienvenida.setFont(new Font("Eras Bold ITC", Font.BOLD, 22));
+        lblBienvenida.setBounds(204, 77, 286, 50);
         contentPane.add(lblBienvenida);
 
-        int altoBoton = 50;
         int anchoBoton = 180;
-        int espacioEntreBotones = 30;
-        int totalBotones = 2;
-        int totalAncho = totalBotones * anchoBoton + espacioEntreBotones;
-        int xInicio = (getWidth() - totalAncho) / 2;
-        int yBotones = 330;
+        int altoBoton = 50;
 
+        // Coordenadas base para alinear botones en dos columnas
+        int xIzquierda = 100;
+        int xDerecha = 370;
+        int yArriba = 160;
+        int yAbajo = 230;
+
+        // Botón "Mi Perfil"
+        JButton btnMiPerfil = new JButton("Mi Perfil");
+        btnMiPerfil.setBounds(xIzquierda, yArriba, anchoBoton, altoBoton);
+        btnMiPerfil.setBackground(new Color(255, 255, 0));
+        btnMiPerfil.setFont(new Font("Ebrima", Font.PLAIN, 12));
+        contentPane.add(btnMiPerfil);
+
+        // Botón "Ver Cursos"
+        JButton btnVerCursos = new JButton("Ver Cursos");
+        btnVerCursos.setBounds(xDerecha, yArriba, anchoBoton, altoBoton);
+        btnVerCursos.setBackground(new Color(255, 255, 0));
+        btnVerCursos.setFont(new Font("Ebrima", Font.PLAIN, 12));
+        contentPane.add(btnVerCursos);
+
+        // Botón "Ver Usuarios"
+        JButton btnVerUsuarios = new JButton("Ver Usuarios");
+        btnVerUsuarios.setBounds(xIzquierda, yAbajo, anchoBoton, altoBoton);
+        btnVerUsuarios.setBackground(new Color(255, 255, 0));
+        btnVerUsuarios.setFont(new Font("Ebrima", Font.PLAIN, 12));
+        contentPane.add(btnVerUsuarios);
+
+        // Botón "Mis Cursos"
+        JButton btnMisCursos = new JButton("Mis Cursos");
+        btnMisCursos.setBounds(xDerecha, yAbajo, anchoBoton, altoBoton);
+        btnMisCursos.setBackground(new Color(255, 255, 0));
+        btnMisCursos.setFont(new Font("Ebrima", Font.PLAIN, 12));
+        contentPane.add(btnMisCursos);
+
+        // Lógica según rol
         if (rol == 0) { // Admin
-            JButton btnVerUsuarios = new JButton("Ver Usuarios");
-            btnVerUsuarios.setBounds(xInicio, yBotones, anchoBoton, altoBoton);
+            btnMisCursos.setVisible(false);
+            btnMiPerfil.setVisible(false);
+
             btnVerUsuarios.addActionListener(e -> {
                 ListaUsuarios lista = new ListaUsuarios(nombre, rol);
                 lista.setVisible(true);
-                dispose(); 
+                dispose();
             });
 
-            contentPane.add(btnVerUsuarios); 
-
-            JButton btnVerCursos = new JButton("Ver Cursos");
-            btnVerCursos.setBounds(xInicio + anchoBoton + espacioEntreBotones, yBotones, anchoBoton, altoBoton);
             btnVerCursos.addActionListener(e -> {
                 ListaCursos lista = new ListaCursos(nombre, rol);
                 lista.setVisible(true);
-                dispose(); 
+                dispose();
             });
-            contentPane.add(btnVerCursos);
 
         } else if (rol == 1) { // Profesor
-            JButton btnMisCursos = new JButton("Mis Cursos");
-            btnMisCursos.setBounds(xInicio, yBotones, anchoBoton, altoBoton);
+            btnVerUsuarios.setVisible(false);
+            btnVerCursos.setVisible(false);
+
             btnMisCursos.addActionListener(e -> {
                 MisCursos vista = new MisCursos(nombre, rol);
                 vista.setVisible(true);
                 dispose();
             });
-            contentPane.add(btnMisCursos);
 
-            JButton btnMiPerfil = new JButton("Mi Perfil");
-            btnMiPerfil.setBounds(xInicio + anchoBoton + espacioEntreBotones, yBotones, anchoBoton, altoBoton);
             btnMiPerfil.addActionListener(e -> {
-            	PerfilProfesor vista = new PerfilProfesor(nombre, rol); // Asegurate de tener esta clase creada
+                PerfilProfesor vista = new PerfilProfesor(nombre, rol);
                 vista.setVisible(true);
                 dispose();
             });
-            contentPane.add(btnMiPerfil);
-        
+
         } else if (rol == 2) { // Alumno
-            JButton btnMisCursos = new JButton("Mis Cursos");
-            btnMisCursos.setBounds(xInicio, yBotones, anchoBoton, altoBoton);
+            btnVerUsuarios.setVisible(false);
+            btnVerCursos.setVisible(false);
+
             btnMisCursos.addActionListener(e -> {
                 MisCursosAlumno vista = new MisCursosAlumno(nombre, rol);
                 vista.setVisible(true);
                 dispose();
             });
-            contentPane.add(btnMisCursos);
 
-            JButton btnMiPerfil = new JButton("Mi Perfil");
-            btnMiPerfil.setBounds(xInicio + anchoBoton + espacioEntreBotones, yBotones, anchoBoton, altoBoton);
             btnMiPerfil.addActionListener(e -> {
                 PerfilAlumno vista = new PerfilAlumno(nombre, rol);
                 vista.setVisible(true);
                 dispose();
             });
-            contentPane.add(btnMiPerfil);
         }
 
-
-        JButton btnCerrarSesion = new JButton("Cerrar Sesión");
-        btnCerrarSesion.setBounds(284, 125, 132, 35);
+        // Botón "Salir"
+        JButton btnCerrarSesion = new JButton("Salir");
+        btnCerrarSesion.setBounds(241, 330, 132, 35);
         btnCerrarSesion.setBackground(new Color(220, 50, 50));
-        btnCerrarSesion.setForeground(Color.WHITE);
+        btnCerrarSesion.setForeground(new Color(255, 255, 255));
+        btnCerrarSesion.setFont(new Font("Ebrima", Font.BOLD, 12));
         btnCerrarSesion.addActionListener(e -> {
             dispose();
             new PantallaIniciarSesion().setVisible(true);

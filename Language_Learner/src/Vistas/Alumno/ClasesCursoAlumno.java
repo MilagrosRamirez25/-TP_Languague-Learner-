@@ -29,54 +29,67 @@ public class ClasesCursoAlumno extends JFrame {
         this.rol = rol;
 
         setTitle("Clases del Curso");
-        setSize(1000, 400);
+        setSize(900, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
-        // Título
-        JLabel lblTitulo = new JLabel("Clases del Curso: " + curso.getNombreCurso(), SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
 
-        JLabel lblSubtitulo = new JLabel("Hacé doble clic para ver el examen", SwingConstants.CENTER);
-        lblSubtitulo.setFont(new Font("Arial", Font.ITALIC, 14));
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-13, 10, 219, 78);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgEscalada = icono.getImage().getScaledInstance(250, 140, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imgEscalada));
+        contentPane.add(lblLogo);
+
+        JLabel lblTitulo = new JLabel("Clases del Curso: " + curso.getNombreCurso());
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 28));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(250, 20, 600, 40);
+        contentPane.add(lblTitulo);
+
+        JLabel lblSubtitulo = new JLabel("Hacé doble clic sobre una clase para ver su examen");
+        lblSubtitulo.setFont(new Font("Ebrima", Font.ITALIC, 16));
         lblSubtitulo.setForeground(Color.DARK_GRAY);
+        lblSubtitulo.setBounds(250, 60, 600, 20);
+        contentPane.add(lblSubtitulo);
 
-        JPanel panelTitulo = new JPanel(new GridLayout(2, 1));
-        panelTitulo.add(lblTitulo);
-        panelTitulo.add(lblSubtitulo);
-        add(panelTitulo, BorderLayout.NORTH);
-
-        claseControlador = new ClaseControlador();
-
-        // Agregamos columna Estado
         modelo = new DefaultTableModel(new Object[]{"Título", "Descripción", "Fecha", "Estado"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-
         tabla = new JTable(modelo);
-        tabla.setRowHeight(30);
+        tabla.setRowHeight(28);
+        tabla.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        tabla.getTableHeader().setFont(new Font("Ebrima", Font.BOLD, 14));
+
         tabla.getColumnModel().getColumn(0).setPreferredWidth(150);
-        tabla.getColumnModel().getColumn(1).setPreferredWidth(450);
+        tabla.getColumnModel().getColumn(1).setPreferredWidth(400);
         tabla.getColumnModel().getColumn(2).setPreferredWidth(150);
         tabla.getColumnModel().getColumn(3).setPreferredWidth(120);
 
-        cargarClases();
-
-        add(new JScrollPane(tabla), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(tabla);
+        scrollPane.setBounds(20, 100, 850, 280);
+        contentPane.add(scrollPane);
 
         JButton btnVolver = new JButton("Volver");
+        btnVolver.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        btnVolver.setBounds(390, 400, 100, 30);
+        contentPane.add(btnVolver);
+
         btnVolver.addActionListener(e -> {
             new MisCursosAlumno(nombreUsuario, rol).setVisible(true);
             dispose();
         });
 
-        JPanel panelInferior = new JPanel();
-        panelInferior.add(btnVolver);
-        add(panelInferior, BorderLayout.SOUTH);
+        claseControlador = new ClaseControlador();
+        cargarClases();
 
         tabla.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -128,6 +141,7 @@ public class ClasesCursoAlumno extends JFrame {
                     estado = "Realizado";
                 }
             }
+
             modelo.addRow(new Object[]{
                     clase.getTitulo(),
                     clase.getTema(),

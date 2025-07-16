@@ -24,22 +24,34 @@ public class MisCursosAlumno extends JFrame {
         this.rol = rol;
 
         setTitle("Mis Cursos - Alumno: " + nombreUsuario);
-        setSize(900, 400);
+        setSize(950, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
-        JLabel lblTitulo = new JLabel("Mis Cursos", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 22));
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
 
-        JLabel lblInstruccion = new JLabel("Hacé doble clic sobre un curso para ver sus clases", SwingConstants.CENTER);
-        lblInstruccion.setFont(new Font("Arial", Font.ITALIC, 14));
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-10, 5, 200, 80);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgEscalada = icono.getImage().getScaledInstance(220, 130, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imgEscalada));
+        contentPane.add(lblLogo);
+
+        JLabel lblTitulo = new JLabel("Mis Cursos");
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 30));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(360, 15, 300, 50);
+        contentPane.add(lblTitulo);
+
+        JLabel lblInstruccion = new JLabel("Hacé doble clic sobre un curso para ver sus clases");
+        lblInstruccion.setFont(new Font("Ebrima", Font.PLAIN, 16));
         lblInstruccion.setForeground(Color.DARK_GRAY);
-
-        JPanel panelTitulo = new JPanel(new GridLayout(2, 1));
-        panelTitulo.add(lblTitulo);
-        panelTitulo.add(lblInstruccion);
-        add(panelTitulo, BorderLayout.NORTH);
+        lblInstruccion.setBounds(290, 55, 400, 30);
+        contentPane.add(lblInstruccion);
 
         cursoControlador = new CursoControlador();
         UsuarioControlador usuarioControlador = new UsuarioControlador();
@@ -56,37 +68,47 @@ public class MisCursosAlumno extends JFrame {
 
         tabla = new JTable(modelo);
         tabla.setRowHeight(30);
+        tabla.setFont(new Font("Ebrima", Font.PLAIN, 15));
+        tabla.getTableHeader().setFont(new Font("Ebrima", Font.BOLD, 15));
         tabla.getColumnModel().getColumn(0).setPreferredWidth(150);
         tabla.getColumnModel().getColumn(1).setPreferredWidth(500);
         tabla.getColumnModel().getColumn(2).setPreferredWidth(200);
 
+        JScrollPane scrollPane = new JScrollPane(tabla);
+        scrollPane.setBounds(30, 100, 880, 260);
+        contentPane.add(scrollPane);
+
+        JButton btnAnotarCurso = new JButton("Anotar Nuevo Curso");
+        JButton btnEliminarCurso = new JButton("Eliminar Curso");
+        JButton btnVolver = new JButton("Volver");
+
+        btnAnotarCurso.setFont(new Font("Ebrima", Font.PLAIN, 15));
+        btnEliminarCurso.setFont(new Font("Ebrima", Font.PLAIN, 15));
+        btnVolver.setFont(new Font("Ebrima", Font.PLAIN, 15));
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 10));
+        panelBotones.setBackground(Color.decode("#F2EEAC"));
+        panelBotones.setBounds(30, 380, 880, 50);
+
+        panelBotones.add(btnAnotarCurso);
+        panelBotones.add(btnEliminarCurso);
+        panelBotones.add(btnVolver);
+
+        contentPane.add(panelBotones);
+
         cargarCursosEnTabla();
 
-        add(new JScrollPane(tabla), BorderLayout.CENTER);
-
-        // Botón volver
-        JButton btnVolver = new JButton("Volver");
         btnVolver.addActionListener(e -> {
             new PantallaHome(nombreUsuario, rol).setVisible(true);
             dispose();
         });
 
-        // Botón anotar nuevo curso
-        JButton btnAnotarCurso = new JButton("Anotar Nuevo Curso");
         btnAnotarCurso.addActionListener(e -> {
             new AnotarCurso(nombreUsuario, rol).setVisible(true);
             dispose();
         });
 
-        // Botón eliminar curso
-        JButton btnEliminarCurso = new JButton("Eliminar Curso");
         btnEliminarCurso.addActionListener(e -> eliminarCursoSeleccionado());
-
-        JPanel panelInferior = new JPanel();
-        panelInferior.add(btnAnotarCurso);
-        panelInferior.add(btnEliminarCurso);
-        panelInferior.add(btnVolver);
-        add(panelInferior, BorderLayout.SOUTH);
 
         tabla.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {

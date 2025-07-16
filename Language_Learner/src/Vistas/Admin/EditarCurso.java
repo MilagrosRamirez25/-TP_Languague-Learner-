@@ -14,85 +14,105 @@ public class EditarCurso extends JFrame {
     private CursoControlador controlador;
     private int idCurso;
 
-    private JTextField txtNombre;
+    private JTextField txtNombre, txtDescripcion, txtFechaInicio, txtCapacidad, txtAlumnosInscritos;
     private JComboBox<String> comboProfesores;
-    private JTextField txtDescripcion;
-    private JTextField txtFechaInicio;
-    private JTextField txtCapacidad;
-    private JTextField txtAlumnosInscritos;
-
     private Map<String, Integer> mapaProfesores;
 
     public EditarCurso(int idCurso) {
         this.idCurso = idCurso;
         this.controlador = new CursoControlador();
+        this.mapaProfesores = new HashMap<>();
 
         setTitle("Editar Curso");
-        setSize(550, 400);
+        setSize(550, 500);
         setLocationRelativeTo(null);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 10, 8, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
 
-        mapaProfesores = new HashMap<>();
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-17, 10, 219, 73);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imagenEscalada = icono.getImage().getScaledInstance(250, 140, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imagenEscalada));
+        contentPane.add(lblLogo);
 
-        // Nombre del curso
-        gbc.gridx = 0; gbc.gridy = 0;
-        add(new JLabel("Nombre del Curso:"), gbc);
-        gbc.gridx = 1;
-        txtNombre = new JTextField(30);
-        add(txtNombre, gbc);
+        JLabel lblTitulo = new JLabel("Editar Curso");
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 23));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(160, 93, 250, 30);
+        contentPane.add(lblTitulo);
 
-        // Profesor
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Profesor:"), gbc);
-        gbc.gridx = 1;
+        JLabel lblNombre = new JLabel("Nombre del Curso:");
+        lblNombre.setBounds(30, 170, 150, 25);
+        contentPane.add(lblNombre);
+
+        txtNombre = new JTextField();
+        txtNombre.setBounds(190, 170, 300, 25);
+        contentPane.add(txtNombre);
+
+        JLabel lblProfesor = new JLabel("Profesor:");
+        lblProfesor.setBounds(30, 210, 150, 25);
+        contentPane.add(lblProfesor);
+
         comboProfesores = new JComboBox<>();
-        add(comboProfesores, gbc);
+        comboProfesores.setBounds(190, 210, 300, 25);
+        contentPane.add(comboProfesores);
 
         // Descripción
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Descripción:"), gbc);
-        gbc.gridx = 1;
-        txtDescripcion = new JTextField(30);
-        add(txtDescripcion, gbc);
+        JLabel lblDescripcion = new JLabel("Descripción:");
+        lblDescripcion.setBounds(30, 250, 150, 25);
+        contentPane.add(lblDescripcion);
 
-        // Fecha inicio
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Fecha Inicio (YYYY-MM-DD):"), gbc);
-        gbc.gridx = 1;
-        txtFechaInicio = new JTextField(30);
-        add(txtFechaInicio, gbc);
+        txtDescripcion = new JTextField();
+        txtDescripcion.setBounds(190, 250, 300, 25);
+        contentPane.add(txtDescripcion);
 
-        // Capacidad máxima
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Capacidad Máxima:"), gbc);
-        gbc.gridx = 1;
-        txtCapacidad = new JTextField(30);
-        add(txtCapacidad, gbc);
+        // Fecha de inicio
+        JLabel lblFecha = new JLabel("Fecha Inicio (YYYY-MM-DD):");
+        lblFecha.setBounds(30, 290, 200, 25);
+        contentPane.add(lblFecha);
 
-        // Alumnos inscritos
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Alumnos Inscritos (no editable):"), gbc);
-        gbc.gridx = 1;
-        txtAlumnosInscritos = new JTextField(30);
+        txtFechaInicio = new JTextField();
+        txtFechaInicio.setBounds(230, 290, 260, 25);
+        contentPane.add(txtFechaInicio);
+
+        // Capacidad
+        JLabel lblCapacidad = new JLabel("Capacidad Máxima:");
+        lblCapacidad.setBounds(30, 330, 150, 25);
+        contentPane.add(lblCapacidad);
+
+        txtCapacidad = new JTextField();
+        txtCapacidad.setBounds(190, 330, 300, 25);
+        contentPane.add(txtCapacidad);
+
+        // Alumnos Inscritos
+        JLabel lblInscritos = new JLabel("Alumnos Inscritos:");
+        lblInscritos.setBounds(30, 370, 150, 25);
+        contentPane.add(lblInscritos);
+
+        txtAlumnosInscritos = new JTextField();
+        txtAlumnosInscritos.setBounds(190, 370, 300, 25);
         txtAlumnosInscritos.setEditable(false);
-        add(txtAlumnosInscritos, gbc);
+        contentPane.add(txtAlumnosInscritos);
 
         // Botones
-        JPanel panelBotones = new JPanel();
         JButton btnGuardar = new JButton("Guardar Cambios");
+        btnGuardar.setBackground(new Color(255, 255, 0));
+        btnGuardar.setForeground(Color.BLACK);
+        btnGuardar.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnGuardar.setBounds(150, 420, 170, 35);
+        contentPane.add(btnGuardar);
+
         JButton btnCancelar = new JButton("Cancelar");
-        panelBotones.add(btnGuardar);
-        panelBotones.add(btnCancelar);
+        btnCancelar.setBounds(330, 420, 120, 35);
+        contentPane.add(btnCancelar);
 
-        gbc.gridx = 0; gbc.gridy++;
-        gbc.gridwidth = 2;
-        add(panelBotones, gbc);
-
+        // Eventos
         btnGuardar.addActionListener(e -> guardarCambios());
         btnCancelar.addActionListener(e -> dispose());
 
@@ -126,7 +146,6 @@ public class EditarCurso extends JFrame {
         String nombreCompleto = controlador.obtenerNombreCompletoProfesorPorId(curso.getIdProfesor());
         String especialidad = controlador.obtenerEspecialidadProfesorPorId(curso.getIdProfesor());
         String item = nombreCompleto + (especialidad != null && !especialidad.isEmpty() ? " (" + especialidad + ")" : "");
-
         comboProfesores.setSelectedItem(item);
 
         txtDescripcion.setText(curso.getDescripcion());
@@ -163,7 +182,6 @@ public class EditarCurso extends JFrame {
         Curso cursoEditado = new Curso(nombre, descripcion, fechaInicio, idProfesor, capacidad, 0);
         cursoEditado.setId(idCurso);
 
-        // Conservar cantidad de alumnos actual
         Curso original = controlador.obtenerCursoPorId(idCurso);
         if (original != null) {
             cursoEditado.setCantidadAlumnosInscritos(original.getCantidadAlumnosInscritos());

@@ -22,17 +22,14 @@ public class VerExamen extends JFrame {
     private final List<JTextArea> camposContenido = new ArrayList<>();
     private final List<List<JTextField>> camposRespuestas = new ArrayList<>();
     private final List<List<JCheckBox>> camposCorrectas = new ArrayList<>();
-    private List<Ejercicio> ejercicios;  // <- NO final para evitar errores de inicialización
+    private List<Ejercicio> ejercicios;
 
- 
-
-    // Constructor principal
     public VerExamen(Clase clase) {
         setTitle("Editar Examen de la Clase: " + clase.getTitulo());
-        setSize(800, 700);
+        setSize(900, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
         examenControlador = new ExamenControlador();
         ejercicioControlador = new EjercicioControlador();
@@ -47,58 +44,138 @@ public class VerExamen extends JFrame {
 
         ejercicios = ejercicioControlador.obtenerEjerciciosPorExamen(examen.getId());
 
-        JPanel panelCentral = new JPanel();
-        panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+        JPanel contentPane = new JPanel(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
 
-        int contador = 1;
+        ImageIcon iconoOriginal = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgOriginal = iconoOriginal.getImage();
+        int logoWidth = 140;
+        int logoHeight = (imgOriginal.getHeight(null) * logoWidth) / imgOriginal.getWidth(null);
+        Image imgEscalada = imgOriginal.getScaledInstance(logoWidth, logoHeight, Image.SCALE_SMOOTH);
+        JLabel lblLogo = new JLabel(new ImageIcon(imgEscalada));
+        lblLogo.setBounds(-27, -26, 179, 140);
+        contentPane.add(lblLogo);
+
+        JLabel lblTitulo = new JLabel("Editar Examen - " + clase.getTitulo());
+        lblTitulo.setFont(new Font("Ebrima", Font.BOLD, 28));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        int tituloX = lblLogo.getX() + lblLogo.getWidth() + 25;
+        int tituloY = lblLogo.getY() + (lblLogo.getHeight() / 2) - 20;
+        lblTitulo.setBounds(221, 69, 700, 40);
+        contentPane.add(lblTitulo);
+
+        JPanel panelEjercicios = new JPanel(null);
+        panelEjercicios.setBackground(Color.decode("#F2EEAC"));
+
+        int panelWidth = 860;
+        int alturaPorEjercicio = 210;
+        int panelHeight = ejercicios.size() * alturaPorEjercicio + 20;
+        panelEjercicios.setPreferredSize(new Dimension(panelWidth, panelHeight));
+
+        int yBase = 10;
+        int ejercicioNum = 1;
+
         for (Ejercicio ej : ejercicios) {
-            JPanel panelEjercicio = new JPanel(new BorderLayout());
-            panelEjercicio.setBorder(BorderFactory.createTitledBorder("Ejercicio " + contador + " (" + ej.getTipo() + " - " + ej.getPuntos() + " pts)"));
+            JPanel panelEjercicio = new JPanel(null);
+            panelEjercicio.setBackground(Color.decode("#FDF9E2"));
+            panelEjercicio.setBorder(BorderFactory.createLineBorder(Color.decode("#CCCC99"), 2));
+            panelEjercicio.setBounds(10, yBase, panelWidth - 20, alturaPorEjercicio - 10);
+            panelEjercicios.add(panelEjercicio);
 
-            JTextArea txtContenido = new JTextArea(ej.getContenido(), 3, 50);
+            JLabel lblEjercicio = new JLabel("Ejercicio " + ejercicioNum + " (" + ej.getTipo() + " - " + ej.getPuntos() + " pts)");
+            lblEjercicio.setFont(new Font("Ebrima", Font.BOLD, 16));
+            lblEjercicio.setBounds(10, 10, 600, 25);
+            panelEjercicio.add(lblEjercicio);
+
+            JTextArea txtContenido = new JTextArea(ej.getContenido());
             txtContenido.setLineWrap(true);
             txtContenido.setWrapStyleWord(true);
+            txtContenido.setFont(new Font("Ebrima", Font.PLAIN, 14));
             camposContenido.add(txtContenido);
-            panelEjercicio.add(new JScrollPane(txtContenido), BorderLayout.NORTH);
+            JScrollPane spContenido = new JScrollPane(txtContenido);
+            spContenido.setBounds(10, 40, panelEjercicio.getWidth() - 20, 60);
+            panelEjercicio.add(spContenido);
 
             List<Respuesta> respuestas = respuestaControlador.obtenerRespuestasPorEjercicio(ej.getId());
-            List<JTextField> camposResp = new ArrayList<>();
-            List<JCheckBox> camposCheck = new ArrayList<>();
+            List<JTextField> listaRespuestas = new ArrayList<>();
+            List<JCheckBox> listaChecks = new ArrayList<>();
 
-            JPanel panelResp = new JPanel(new GridLayout(respuestas.size(), 1));
+            int respY = 110;
             char letra = 'a';
+
             for (Respuesta r : respuestas) {
-                JPanel fila = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                JLabel lbl = new JLabel(letra++ + ")");
-                JTextField txtResp = new JTextField(r.getRespuesta(), 40);
+                JLabel lblResp = new JLabel(letra++ + ")");
+                lblResp.setFont(new Font("Ebrima", Font.BOLD, 14));
+                lblResp.setBounds(10, respY + 5, 20, 25);
+                panelEjercicio.add(lblResp);
+
+                JTextField txtResp = new JTextField(r.getRespuesta());
+                txtResp.setFont(new Font("Ebrima", Font.PLAIN, 14));
+                txtResp.setBounds(30, respY, 520, 30);
+                panelEjercicio.add(txtResp);
+                listaRespuestas.add(txtResp);
+
                 JCheckBox chkCorrecta = new JCheckBox("Correcta", r.isCorrecta());
+                chkCorrecta.setFont(new Font("Ebrima", Font.PLAIN, 13));
+                chkCorrecta.setBackground(Color.decode("#FDF9E2"));
+                chkCorrecta.setBounds(560, respY + 5, 100, 25);
+                panelEjercicio.add(chkCorrecta);
+                listaChecks.add(chkCorrecta);
 
-                camposResp.add(txtResp);
-                camposCheck.add(chkCorrecta);
-
-                fila.add(lbl);
-                fila.add(txtResp);
-                fila.add(chkCorrecta);
-                panelResp.add(fila);
+                respY += 35;
             }
 
-            camposRespuestas.add(camposResp);
-            camposCorrectas.add(camposCheck);
-            panelEjercicio.add(panelResp, BorderLayout.CENTER);
+            camposRespuestas.add(listaRespuestas);
+            camposCorrectas.add(listaChecks);
 
-            panelCentral.add(panelEjercicio);
-            contador++;
+            yBase += alturaPorEjercicio;
+            ejercicioNum++;
         }
 
-        JScrollPane scroll = new JScrollPane(panelCentral);
-        add(scroll, BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(panelEjercicios);
+        scroll.setBounds(25, 134, panelWidth, 570);
+        scroll.getVerticalScrollBar().setUnitIncrement(16);
+        contentPane.add(scroll);
+
+        JPanel panelBotones = new JPanel(null);
+        panelBotones.setBackground(Color.decode("#F2EEAC"));
+        int panelBotonesY = scroll.getY() + scroll.getHeight() + 10;
+        panelBotones.setBounds(0, panelBotonesY, getWidth(), 60);
+        contentPane.add(panelBotones);
 
         JButton btnGuardar = new JButton("Guardar Cambios");
+        btnGuardar.setFont(new Font("Ebrima", Font.BOLD, 16));
+        btnGuardar.setBackground(Color.WHITE);
+        btnGuardar.setForeground(new Color(0, 83, 166));
+        btnGuardar.setFocusPainted(false);
+        int btnGuardarWidth = 180;
+        int btnGuardarHeight = 40;
+        btnGuardar.setBounds((getWidth() / 2) - (btnGuardarWidth / 2), 10, btnGuardarWidth, btnGuardarHeight);
         btnGuardar.addActionListener(e -> guardarCambios());
+        panelBotones.add(btnGuardar);
 
-        JPanel panelSur = new JPanel();
-        panelSur.add(btnGuardar);
-        add(panelSur, BorderLayout.SOUTH);
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        btnCancelar.setBackground(Color.LIGHT_GRAY);
+        btnCancelar.setFocusPainted(false);
+        int btnCancelarWidth = 110;
+        int btnCancelarHeight = 35;
+        btnCancelar.setBounds(btnGuardar.getX() + btnGuardarWidth + 15, 12, btnCancelarWidth, btnCancelarHeight);
+        btnCancelar.addActionListener(e -> dispose());
+        panelBotones.add(btnCancelar);
+
+        JButton btnVolver = new JButton("Volver");
+        btnVolver.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        btnVolver.setBackground(Color.LIGHT_GRAY);
+        btnVolver.setFocusPainted(false);
+        int btnVolverWidth = 110;
+        int btnVolverHeight = 35;
+        btnVolver.setBounds(btnGuardar.getX() - btnVolverWidth - 15, 12, btnVolverWidth, btnVolverHeight);
+        btnVolver.addActionListener(e -> {
+            dispose();
+        });
+        panelBotones.add(btnVolver);
     }
 
     private void guardarCambios() {
@@ -129,10 +206,9 @@ public class VerExamen extends JFrame {
 
         if (todoBien) {
             JOptionPane.showMessageDialog(this, "Cambios guardados exitosamente.");
-            dispose();  // <-- Cierra la ventana
+            dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Hubo un error al guardar los cambios.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 }

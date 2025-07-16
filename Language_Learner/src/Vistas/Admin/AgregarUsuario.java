@@ -18,84 +18,113 @@ public class AgregarUsuario extends JFrame {
     private String nombreUsuarioActual;
     private int rolUsuarioActual;
 
-    // Constructor con parámetros para que no te dé error al crear instancia
     public AgregarUsuario(String nombreUsuarioActual, int rolUsuarioActual) {
         this.nombreUsuarioActual = nombreUsuarioActual;
         this.rolUsuarioActual = rolUsuarioActual;
 
         setTitle("Agregar Usuario");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 450, 450);
+        setBounds(100, 100, 460, 580);
         setLocationRelativeTo(null);
 
         controlador = new UsuarioControlador();
 
         contentPane = new JPanel();
         contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
         setContentPane(contentPane);
 
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-23, 0, 216, 75);
+        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image scaledImage = originalIcon.getImage().getScaledInstance(250, 140, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(scaledImage));
+        contentPane.add(lblLogo);
+
+        JLabel lblTitulo = new JLabel("Agregar Usuario");
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 23));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(123, 69, 296, 40);
+        lblTitulo.setHorizontalAlignment(SwingConstants.LEFT);
+        contentPane.add(lblTitulo);
+
+        // Usuario
         JLabel lblUsuario = new JLabel("Usuario:");
-        lblUsuario.setBounds(30, 20, 100, 25);
+        lblUsuario.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblUsuario.setBounds(30, 136, 100, 25);
         contentPane.add(lblUsuario);
 
         txtUsuario = new JTextField();
-        txtUsuario.setBounds(140, 20, 250, 25);
+        txtUsuario.setBounds(140, 136, 260, 25);
         contentPane.add(txtUsuario);
 
+        // Email
         JLabel lblEmail = new JLabel("Email:");
-        lblEmail.setBounds(30, 60, 100, 25);
+        lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblEmail.setBounds(30, 176, 100, 25);
         contentPane.add(lblEmail);
 
         txtEmail = new JTextField();
-        txtEmail.setBounds(140, 60, 250, 25);
+        txtEmail.setBounds(140, 176, 260, 25);
         contentPane.add(txtEmail);
 
         JLabel lblPass = new JLabel("Contraseña:");
-        lblPass.setBounds(30, 100, 100, 25);
+        lblPass.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblPass.setBounds(30, 216, 100, 25);
         contentPane.add(lblPass);
 
         txtPass = new JPasswordField();
-        txtPass.setBounds(140, 100, 250, 25);
+        txtPass.setBounds(140, 216, 260, 25);
         contentPane.add(txtPass);
 
+        // Rol
         JLabel lblRol = new JLabel("Rol:");
-        lblRol.setBounds(30, 140, 100, 25);
+        lblRol.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblRol.setBounds(30, 256, 100, 25);
         contentPane.add(lblRol);
 
         cmbRol = new JComboBox<>(new String[]{"Admin", "Profesor", "Alumno"});
-        cmbRol.setBounds(140, 140, 250, 25);
+        cmbRol.setBounds(140, 256, 260, 25);
         contentPane.add(cmbRol);
 
+        // Nombre
         JLabel lblNombre = new JLabel("Nombre:");
-        lblNombre.setBounds(30, 180, 100, 25);
+        lblNombre.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblNombre.setBounds(30, 296, 100, 25);
         contentPane.add(lblNombre);
 
         txtNombre = new JTextField();
-        txtNombre.setBounds(140, 180, 250, 25);
+        txtNombre.setBounds(140, 296, 260, 25);
         contentPane.add(txtNombre);
 
+        // Apellido
         JLabel lblApellido = new JLabel("Apellido:");
-        lblApellido.setBounds(30, 220, 100, 25);
+        lblApellido.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblApellido.setBounds(30, 336, 100, 25);
         contentPane.add(lblApellido);
 
         txtApellido = new JTextField();
-        txtApellido.setBounds(140, 220, 250, 25);
+        txtApellido.setBounds(140, 336, 260, 25);
         contentPane.add(txtApellido);
 
+        // DNI
         JLabel lblDni = new JLabel("DNI:");
-        lblDni.setBounds(30, 260, 100, 25);
+        lblDni.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblDni.setBounds(30, 376, 100, 25);
         contentPane.add(lblDni);
 
         txtDni = new JTextField();
-        txtDni.setBounds(140, 260, 250, 25);
+        txtDni.setBounds(140, 376, 260, 25);
         contentPane.add(txtDni);
 
+        // Especialidad
         JLabel lblEspecialidad = new JLabel("Especialidad:");
-        lblEspecialidad.setBounds(30, 300, 100, 25);
+        lblEspecialidad.setFont(new Font("Tahoma", Font.PLAIN, 13));
+        lblEspecialidad.setBounds(30, 416, 100, 25);
         contentPane.add(lblEspecialidad);
 
         txtEspecialidad = new JTextField();
-        txtEspecialidad.setBounds(140, 300, 250, 25);
+        txtEspecialidad.setBounds(140, 416, 260, 25);
         contentPane.add(txtEspecialidad);
 
         setCamposEspecificosVisible(false);
@@ -115,7 +144,10 @@ public class AgregarUsuario extends JFrame {
         });
 
         JButton btnGuardar = new JButton("Guardar");
-        btnGuardar.setBounds(140, 350, 150, 40);
+        btnGuardar.setFont(new Font("Tahoma", Font.BOLD, 16));
+        btnGuardar.setBackground(new Color(255, 255, 0));
+        btnGuardar.setForeground(Color.BLACK);
+        btnGuardar.setBounds(143, 474, 150, 40);
         btnGuardar.addActionListener(e -> guardarUsuario());
         contentPane.add(btnGuardar);
     }

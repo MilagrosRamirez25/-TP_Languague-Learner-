@@ -17,15 +17,15 @@ import java.util.List;
 
 public class VerExamenAlumno extends JFrame {
 
-    private List<List<JCheckBox>> opcionesSeleccionadas = new ArrayList<>();
+    private final List<List<JCheckBox>> opcionesSeleccionadas = new ArrayList<>();
     private List<Ejercicio> ejercicios;
     private Examen examen;
-    private Clase clase;
-    private Curso curso;
-    private String nombreUsuario;
-    private int rol;
+    private final Clase clase;
+    private final Curso curso;
+    private final String nombreUsuario;
+    private final int rol;
 
-    private ResultadoExamenControlador resultadoControlador = new ResultadoExamenControlador();
+    private final ResultadoExamenControlador resultadoControlador = new ResultadoExamenControlador();
 
     public VerExamenAlumno(Clase clase, Curso curso, String nombreUsuario, int rol) {
         this.clase = clase;
@@ -34,15 +34,35 @@ public class VerExamenAlumno extends JFrame {
         this.rol = rol;
 
         setTitle("Examen - " + clase.getTitulo());
-        setSize(800, 700);
+        setSize(900, 750);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
-        cargarExamen();
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
+
+        // Logo
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-20, 10, 220, 78);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgEscalada = icono.getImage().getScaledInstance(250, 140, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imgEscalada));
+        contentPane.add(lblLogo);
+
+        // Título
+        JLabel lblTitulo = new JLabel("Examen: " + clase.getTitulo(), SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("Ebrima", Font.BOLD, 26));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(183, 31, 600, 40);
+        contentPane.add(lblTitulo);
+
+        cargarExamen(contentPane);
     }
 
-    private void cargarExamen() {
+    private void cargarExamen(JPanel contentPane) {
         ExamenControlador examenControlador = new ExamenControlador();
         EjercicioControlador ejercicioControlador = new EjercicioControlador();
         RespuestaControlador respuestaControlador = new RespuestaControlador();
@@ -71,52 +91,69 @@ public class VerExamenAlumno extends JFrame {
 
         JPanel panelCentral = new JPanel();
         panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
+        panelCentral.setBackground(Color.decode("#F2EEAC"));
 
         int contador = 1;
         for (Ejercicio ej : ejercicios) {
             JPanel panelEjercicio = new JPanel(new BorderLayout());
             panelEjercicio.setBorder(BorderFactory.createTitledBorder("Ejercicio " + contador + " (" + ej.getTipo() + " - " + ej.getPuntos() + " pts)"));
+            panelEjercicio.setBackground(Color.decode("#F2EEAC"));
 
             JTextArea txtContenido = new JTextArea(ej.getContenido());
             txtContenido.setLineWrap(true);
             txtContenido.setWrapStyleWord(true);
             txtContenido.setEditable(false);
+            txtContenido.setFont(new Font("Ebrima", Font.PLAIN, 15));
             txtContenido.setBackground(new Color(240, 240, 240));
+            txtContenido.setMargin(new Insets(5, 5, 5, 5));
             panelEjercicio.add(new JScrollPane(txtContenido), BorderLayout.NORTH);
 
             List<Respuesta> respuestas = respuestaControlador.obtenerRespuestasPorEjercicio(ej.getId());
 
             JPanel panelOpciones = new JPanel(new GridLayout(respuestas.size(), 1));
+            panelOpciones.setBackground(Color.decode("#F2EEAC"));
+
             List<JCheckBox> opcionesEjercicio = new ArrayList<>();
             char letra = 'a';
             for (Respuesta r : respuestas) {
                 JCheckBox chk = new JCheckBox(letra++ + ") " + r.getRespuesta());
+                chk.setFont(new Font("Ebrima", Font.PLAIN, 14));
+                chk.setBackground(Color.decode("#F2EEAC"));
                 opcionesEjercicio.add(chk);
                 panelOpciones.add(chk);
             }
-            opcionesSeleccionadas.add(opcionesEjercicio);
 
+            opcionesSeleccionadas.add(opcionesEjercicio);
             panelEjercicio.add(panelOpciones, BorderLayout.CENTER);
             panelCentral.add(panelEjercicio);
             contador++;
         }
 
         JScrollPane scroll = new JScrollPane(panelCentral);
-        add(scroll, BorderLayout.CENTER);
+        scroll.setBounds(30, 90, 820, 530);
+        contentPane.add(scroll);
 
+        // Botones
         JButton btnEnviar = new JButton("Enviar respuestas");
-        btnEnviar.addActionListener(e -> evaluarExamen());
-
         JButton btnVolver = new JButton("Volver");
+
+        btnEnviar.setFont(new Font("Ebrima", Font.PLAIN, 15));
+        btnVolver.setFont(new Font("Ebrima", Font.PLAIN, 15));
+
+        btnEnviar.addActionListener(e -> evaluarExamen());
         btnVolver.addActionListener(e -> {
             new ClasesCursoAlumno(curso, nombreUsuario, rol).setVisible(true);
             dispose();
         });
 
-        JPanel panelSur = new JPanel();
-        panelSur.add(btnEnviar);
-        panelSur.add(btnVolver);
-        add(panelSur, BorderLayout.SOUTH);
+        JPanel panelBotones = new JPanel();
+        panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        panelBotones.setBounds(30, 630, 820, 50);
+        panelBotones.setBackground(Color.decode("#F2EEAC"));
+        panelBotones.add(btnEnviar);
+        panelBotones.add(btnVolver);
+
+        contentPane.add(panelBotones);
     }
 
     private void evaluarExamen() {

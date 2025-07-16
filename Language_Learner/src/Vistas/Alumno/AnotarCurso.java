@@ -25,14 +25,29 @@ public class AnotarCurso extends JFrame {
         this.nombreUsuario = nombreUsuario;
         this.rol = rol;
 
-        setTitle("Cursos Disponibles para Anotar - Alumno: " + nombreUsuario);
-        setSize(900, 400);
+        setTitle("Anotar Curso");
+        setSize(900, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
-        cursoControlador = new CursoControlador();
-        usuarioControlador = new UsuarioControlador();
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
+
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-13, 10, 219, 78);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imgEscalada = icono.getImage().getScaledInstance(250, 140, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imgEscalada));
+        contentPane.add(lblLogo);
+
+        JLabel lblTitulo = new JLabel("Cursos Disponibles para Anotarse");
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 25));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(300, 30, 600, 50);
+        contentPane.add(lblTitulo);
 
         modeloCursos = new DefaultTableModel(new Object[]{"Nombre", "Descripción", "Profesor"}, 0) {
             @Override
@@ -40,27 +55,40 @@ public class AnotarCurso extends JFrame {
                 return false;
             }
         };
-
         tablaCursos = new JTable(modeloCursos);
-        tablaCursos.setRowHeight(30);
+        tablaCursos.setRowHeight(28);
+        tablaCursos.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        tablaCursos.getTableHeader().setFont(new Font("Ebrima", Font.BOLD, 14));
 
-        cargarCursosDisponibles();
+        JScrollPane scrollPane = new JScrollPane(tablaCursos);
+        scrollPane.setBounds(20, 120, 850, 250);
+        contentPane.add(scrollPane);
 
-        add(new JScrollPane(tablaCursos), BorderLayout.CENTER);
-
+        JButton btnAnotar = new JButton("Anotar Curso");
         JButton btnVolver = new JButton("Volver");
+
+        btnAnotar.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        btnVolver.setFont(new Font("Ebrima", Font.PLAIN, 14));
+
+        JPanel panelBotones = new JPanel();
+        panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        panelBotones.setBounds(20, 390, 850, 50);
+        panelBotones.setBackground(Color.decode("#F2EEAC"));
+
+        panelBotones.add(btnAnotar);
+        panelBotones.add(btnVolver);
+        contentPane.add(panelBotones);
+
+        btnAnotar.addActionListener(e -> anotarCursoSeleccionado());
         btnVolver.addActionListener(e -> {
-            new MisCursosAlumno(nombreUsuario, rol).setVisible(true);
+            new PantallaHome(nombreUsuario, rol).setVisible(true);
             dispose();
         });
 
-        JButton btnAnotar = new JButton("Anotar Curso");
-        btnAnotar.addActionListener(e -> anotarCursoSeleccionado());
+        cursoControlador = new CursoControlador();
+        usuarioControlador = new UsuarioControlador();
 
-        JPanel panelBotones = new JPanel();
-        panelBotones.add(btnAnotar);
-        panelBotones.add(btnVolver);
-        add(panelBotones, BorderLayout.SOUTH);
+        cargarCursosDisponibles();
     }
 
     private void cargarCursosDisponibles() {
@@ -80,28 +108,26 @@ public class AnotarCurso extends JFrame {
                 .toList();
 
         for (Curso c : cursosDisponibles) {
-            String nombreProfesorCompleto = cursoControlador.obtenerNombreCompletoProfesorPorId(c.getIdProfesor());
-            modeloCursos.addRow(new Object[]{c.getNombreCurso(), c.getDescripcion(), nombreProfesorCompleto});
+            String profesor = cursoControlador.obtenerNombreCompletoProfesorPorId(c.getIdProfesor());
+            modeloCursos.addRow(new Object[]{c.getNombreCurso(), c.getDescripcion(), profesor});
         }
     }
 
     private void anotarCursoSeleccionado() {
-        int filaSeleccionada = tablaCursos.getSelectedRow();
-
-        if (filaSeleccionada == -1) {
-            JOptionPane.showMessageDialog(this, "Seleccioná un curso para anotarte.", "Atención", JOptionPane.WARNING_MESSAGE);
+        int fila = tablaCursos.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Seleccioná un curso primero.");
             return;
         }
 
-        Curso cursoSeleccionado = cursosDisponibles.get(filaSeleccionada);
-
-        boolean exito = cursoControlador.inscribirAlumnoEnCurso(idAlumno, cursoSeleccionado.getId());
+        Curso curso = cursosDisponibles.get(fila);
+        boolean exito = cursoControlador.inscribirAlumnoEnCurso(idAlumno, curso.getId());
 
         if (exito) {
-            JOptionPane.showMessageDialog(this, "Te anotaste correctamente en el curso.");
+            JOptionPane.showMessageDialog(this, "¡Te anotaste al curso correctamente!");
             cargarCursosDisponibles();
         } else {
-            JOptionPane.showMessageDialog(this, "No se pudo anotar en el curso (quizás ya estás anotado).", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "No se pudo realizar la inscripción.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

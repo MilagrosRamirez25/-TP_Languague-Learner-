@@ -25,75 +25,106 @@ public class Registro extends JFrame {
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(15, 15, 15, 15));
         contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC")); 
         setContentPane(contentPane);
 
+        JLabel lblImagen = new JLabel();
+        lblImagen.setBounds(0, 0, 223, 68);
+        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/img/logo.png"));
+        java.awt.Image scaledImage = originalIcon.getImage().getScaledInstance(250, 140, java.awt.Image.SCALE_SMOOTH);
+        lblImagen.setIcon(new ImageIcon(scaledImage));
+        contentPane.add(lblImagen);
+
+
         JLabel lblTitulo = new JLabel("Registro de Alumno");
-        lblTitulo.setFont(new Font("Tahoma", Font.BOLD, 24));
-        lblTitulo.setBounds(140, 10, 300, 30);
+        lblTitulo.setForeground(new Color(37, 68, 175));
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 22));
+        lblTitulo.setBounds(226, 49, 300, 30);
         contentPane.add(lblTitulo);
 
-        // Campos comunes
         JLabel lblUsuario = new JLabel("Usuario:");
-        lblUsuario.setBounds(50, 60, 100, 25);
+        lblUsuario.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        lblUsuario.setBounds(50, 100, 100, 25);
         contentPane.add(lblUsuario);
+
         inpUsuario = new JTextField();
-        inpUsuario.setBounds(180, 60, 250, 25);
+        inpUsuario.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        inpUsuario.setBounds(180, 100, 250, 25);
         contentPane.add(inpUsuario);
 
         JLabel lblEmail = new JLabel("Email:");
-        lblEmail.setBounds(50, 100, 100, 25);
+        lblEmail.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        lblEmail.setBounds(50, 130, 100, 25);
         contentPane.add(lblEmail);
+
         inpEmail = new JTextField();
-        inpEmail.setBounds(180, 100, 250, 25);
+        inpEmail.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        inpEmail.setBounds(180, 130, 250, 25);
         contentPane.add(inpEmail);
 
         JLabel lblPass = new JLabel("Contraseña:");
-        lblPass.setBounds(50, 140, 100, 25);
+        lblPass.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        lblPass.setBounds(50, 160, 100, 25);
         contentPane.add(lblPass);
+
         inpPass = new JPasswordField();
-        inpPass.setBounds(180, 140, 250, 25);
+        inpPass.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        inpPass.setBounds(180, 160, 250, 25);
         contentPane.add(inpPass);
 
         JLabel lblRepetir = new JLabel("Repetir Contraseña:");
-        lblRepetir.setBounds(50, 180, 130, 25);
+        lblRepetir.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        lblRepetir.setBounds(50, 190, 130, 25);
         contentPane.add(lblRepetir);
+
         inpRepetirPass = new JPasswordField();
-        inpRepetirPass.setBounds(180, 180, 250, 25);
+        inpRepetirPass.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        inpRepetirPass.setBounds(180, 190, 250, 25);
         contentPane.add(inpRepetirPass);
 
-        // Datos del alumno
         JLabel lblNombre = new JLabel("Nombre:");
+        lblNombre.setFont(new Font("Ebrima", Font.PLAIN, 14));
         lblNombre.setBounds(50, 220, 100, 25);
         contentPane.add(lblNombre);
+
         inpNombre = new JTextField();
+        inpNombre.setFont(new Font("Ebrima", Font.PLAIN, 14));
         inpNombre.setBounds(180, 220, 250, 25);
         contentPane.add(inpNombre);
 
         JLabel lblApellido = new JLabel("Apellido:");
-        lblApellido.setBounds(50, 260, 100, 25);
+        lblApellido.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        lblApellido.setBounds(50, 250, 100, 25);
         contentPane.add(lblApellido);
+
         inpApellido = new JTextField();
-        inpApellido.setBounds(180, 260, 250, 25);
+        inpApellido.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        inpApellido.setBounds(180, 250, 250, 25);
         contentPane.add(inpApellido);
 
         JLabel lblDni = new JLabel("DNI:");
-        lblDni.setBounds(50, 300, 100, 25);
+        lblDni.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        lblDni.setBounds(50, 280, 100, 25);
         contentPane.add(lblDni);
+
         inpDni = new JTextField();
-        inpDni.setBounds(180, 300, 250, 25);
+        inpDni.setFont(new Font("Ebrima", Font.PLAIN, 14));
+        inpDni.setBounds(180, 280, 250, 25);
         contentPane.add(inpDni);
 
-        // Botón registrar
         JButton btnRegistrar = new JButton("Registrarse");
-        btnRegistrar.setBounds(180, 350, 150, 40);
+        btnRegistrar.setFont(new Font("Ebrima", Font.PLAIN, 16));
+        btnRegistrar.setBackground(new Color(255, 255, 0));
+        btnRegistrar.setBounds(180, 330, 150, 40);
         contentPane.add(btnRegistrar);
 
-        // Botón volver
         JButton btnVolver = new JButton("Volver");
-        btnVolver.setBounds(180, 400, 150, 35);
+        btnVolver.setFont(new Font("Ebrima", Font.PLAIN, 16));
+        btnVolver.setBackground(new Color(255, 255, 0));
+        btnVolver.setBounds(180, 385, 150, 35);
         contentPane.add(btnVolver);
 
-        // Acción registrar
+        // registrar
         btnRegistrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String usuario = inpUsuario.getText().trim();
@@ -117,17 +148,16 @@ public class Registro extends JFrame {
 
                 UsuarioControlador controlador = new UsuarioControlador();
 
-                // Primero verificar si usuario o email existen
                 if (controlador.usuarioOEmailExiste(usuario, email)) {
                     JOptionPane.showMessageDialog(null, "El usuario o email ya están en uso.");
                     return;
                 }
 
-                Usuario nuevo = new Usuario(0, usuario, email, pass, 2); // rol 2 = alumno
+                Usuario nuevo = new Usuario(0, usuario, email, pass, 2);
 
-                boolean exito = controlador.addUserWithDetails(nuevo, 
-                        null, null, null, null, // sin datos de profesor
-                        nombre, apellido, dni   // datos de alumno
+                boolean exito = controlador.addUserWithDetails(nuevo,
+                        null, null, null, null,
+                        nombre, apellido, dni
                 );
 
                 if (exito) {
@@ -140,8 +170,6 @@ public class Registro extends JFrame {
             }
         });
 
-
-        // Acción volver
         btnVolver.addActionListener(e -> {
             dispose();
             new PantallaIniciarSesion().setVisible(true);

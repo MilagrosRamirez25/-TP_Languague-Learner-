@@ -21,36 +21,55 @@ public class AgregarCurso extends JFrame {
     private JTextField txtFechaInicio;
     private JTextField txtCapacidad;
 
-    private Map<String, Integer> mapaProfesores; // "Nombre Apellido (Especialidad)" -> idProfesor
+    private Map<String, Integer> mapaProfesores;
 
     public AgregarCurso() {
         controlador = new CursoControlador();
 
         setTitle("Agregar Curso");
-        setSize(550, 350);
+        setSize(550, 450);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
-        setLayout(new GridBagLayout());
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 10, 8, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
 
-        // Nombre del Curso
-        gbc.gridx = 0; gbc.gridy = 0;
-        add(new JLabel("Nombre del Curso:"), gbc);
-        gbc.gridx = 1;
-        txtNombre = new JTextField(30);
-        add(txtNombre, gbc);
+        JLabel lblImagen = new JLabel();
+        lblImagen.setBounds(0, 0, 233, 84);
+        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/img/logo.png"));
+        java.awt.Image scaledImage = originalIcon.getImage().getScaledInstance(250, 140, java.awt.Image.SCALE_SMOOTH);
+        lblImagen.setIcon(new ImageIcon(scaledImage));
+        contentPane.add(lblImagen);
+
+
+        JLabel lblTitulo = new JLabel("Agregar Curso");
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 23));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(227, 23, 231, 40);
+        lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
+        contentPane.add(lblTitulo);
+
+        JLabel lblNombre = new JLabel("Nombre del Curso:");
+        lblNombre.setBounds(30, 80, 150, 25);
+        contentPane.add(lblNombre);
+
+        txtNombre = new JTextField();
+        txtNombre.setBounds(190, 80, 300, 25);
+        contentPane.add(txtNombre);
 
         // Profesor
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Profesor:"), gbc);
-        gbc.gridx = 1;
-        comboProfesores = new JComboBox<>();
-        mapaProfesores = new HashMap<>();
+        JLabel lblProfesor = new JLabel("Profesor:");
+        lblProfesor.setBounds(30, 120, 150, 25);
+        contentPane.add(lblProfesor);
 
+        comboProfesores = new JComboBox<>();
+        comboProfesores.setBounds(190, 120, 300, 25);
+        contentPane.add(comboProfesores);
+
+        mapaProfesores = new HashMap<>();
         for (Profesor p : controlador.obtenerProfesores()) {
             String nombreCompleto = p.getNombre() + " " + p.getApellido();
             String especialidad = p.getEspecialidad();
@@ -59,39 +78,41 @@ public class AgregarCurso extends JFrame {
             mapaProfesores.put(item, p.getId());
         }
 
-        add(comboProfesores, gbc);
-
         // Descripción
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Descripción:"), gbc);
-        gbc.gridx = 1;
-        txtDescripcion = new JTextField(30);
-        add(txtDescripcion, gbc);
+        JLabel lblDescripcion = new JLabel("Descripción:");
+        lblDescripcion.setBounds(30, 160, 150, 25);
+        contentPane.add(lblDescripcion);
 
-        // Fecha de inicio
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Fecha Inicio (YYYY-MM-DD):"), gbc);
-        gbc.gridx = 1;
-        txtFechaInicio = new JTextField(30);
-        add(txtFechaInicio, gbc);
+        txtDescripcion = new JTextField();
+        txtDescripcion.setBounds(190, 160, 300, 25);
+        contentPane.add(txtDescripcion);
+
+        // Fecha Inicio
+        JLabel lblFechaInicio = new JLabel("Fecha Inicio (YYYY-MM-DD):");
+        lblFechaInicio.setBounds(30, 200, 170, 25);
+        contentPane.add(lblFechaInicio);
+
+        txtFechaInicio = new JTextField();
+        txtFechaInicio.setBounds(190, 200, 300, 25);
+        contentPane.add(txtFechaInicio);
 
         // Capacidad
-        gbc.gridx = 0; gbc.gridy++;
-        add(new JLabel("Capacidad Máxima:"), gbc);
-        gbc.gridx = 1;
-        txtCapacidad = new JTextField(30);
-        add(txtCapacidad, gbc);
+        JLabel lblCapacidad = new JLabel("Capacidad Máxima:");
+        lblCapacidad.setBounds(30, 240, 150, 25);
+        contentPane.add(lblCapacidad);
+
+        txtCapacidad = new JTextField();
+        txtCapacidad.setBounds(190, 240, 300, 25);
+        contentPane.add(txtCapacidad);
 
         // Botones
-        JPanel panelBotones = new JPanel();
         JButton btnGuardar = new JButton("Guardar");
-        JButton btnCancelar = new JButton("Cancelar");
-        panelBotones.add(btnGuardar);
-        panelBotones.add(btnCancelar);
+        btnGuardar.setBounds(150, 300, 100, 35);
+        contentPane.add(btnGuardar);
 
-        gbc.gridx = 0; gbc.gridy++;
-        gbc.gridwidth = 2;
-        add(panelBotones, gbc);
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setBounds(300, 300, 100, 35);
+        contentPane.add(btnCancelar);
 
         btnGuardar.addActionListener(e -> guardarCurso());
         btnCancelar.addActionListener(e -> dispose());

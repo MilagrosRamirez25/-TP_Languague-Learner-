@@ -26,11 +26,30 @@ public class ListaUsuarios extends JFrame {
         controlador = new UsuarioControlador();
 
         setTitle("Lista de Usuarios");
-        setSize(700, 450);
+        setSize(900, 500);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
+        setResizable(false);
 
+        JPanel contentPane = new JPanel();
+        contentPane.setLayout(null);
+        contentPane.setBackground(Color.decode("#F2EEAC"));
+        setContentPane(contentPane);
+
+        JLabel lblLogo = new JLabel();
+        lblLogo.setBounds(-13, 10, 219, 78);
+        ImageIcon icono = new ImageIcon(getClass().getResource("/img/logo.png"));
+        Image imagenEscalada = icono.getImage().getScaledInstance(250, 140, Image.SCALE_SMOOTH);
+        lblLogo.setIcon(new ImageIcon(imagenEscalada));
+        contentPane.add(lblLogo);
+
+        JLabel lblTitulo = new JLabel("Lista de Usuarios");
+        lblTitulo.setFont(new Font("Eras Bold ITC", Font.BOLD, 30));
+        lblTitulo.setForeground(new Color(0, 83, 166));
+        lblTitulo.setBounds(300, 30, 400, 50);
+        contentPane.add(lblTitulo);
+
+        // Ttabla
         String[] columnas = {"ID", "Usuario", "Email", "Rol"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
@@ -40,10 +59,20 @@ public class ListaUsuarios extends JFrame {
         };
 
         tablaUsuarios = new JTable(modeloTabla);
+        tablaUsuarios.getColumnModel().getColumn(0).setPreferredWidth(30);
+        tablaUsuarios.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tablaUsuarios.getColumnModel().getColumn(2).setPreferredWidth(250);
+        tablaUsuarios.getColumnModel().getColumn(3).setPreferredWidth(100);
+
         JScrollPane scrollPane = new JScrollPane(tablaUsuarios);
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBounds(20, 120, 850, 250);
+        contentPane.add(scrollPane);
 
         JPanel panelBotones = new JPanel();
+        panelBotones.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        panelBotones.setBounds(20, 390, 850, 50);
+        panelBotones.setBackground(Color.decode("#F2EEAC"));
+
         JButton btnAgregar = new JButton("Agregar");
         JButton btnEditar = new JButton("Editar");
         JButton btnEliminar = new JButton("Eliminar");
@@ -56,7 +85,7 @@ public class ListaUsuarios extends JFrame {
         panelBotones.add(btnActualizar);
         panelBotones.add(btnVolver);
 
-        add(panelBotones, BorderLayout.SOUTH);
+        contentPane.add(panelBotones);
 
         cargarUsuarios();
 
@@ -88,7 +117,7 @@ public class ListaUsuarios extends JFrame {
                         cargarUsuarios();
                     }
                 });
-                this.dispose();
+                dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Error al cargar usuario.");
             }
@@ -127,22 +156,21 @@ public class ListaUsuarios extends JFrame {
 
         for (Usuario u : usuarios) {
             Object[] fila = {
-                    u.getId(),
-                    u.getUsuario(),
-                    u.getEmail(),
-                    rolToString(u.getRol())
+                u.getId(),
+                u.getUsuario(),
+                u.getEmail(),
+                rolToString(u.getRol())
             };
             modeloTabla.addRow(fila);
         }
     }
 
     private String rolToString(int rol) {
-        switch (rol) {
-            case 0: return "Admin";
-            case 1: return "Profesor";
-            case 2: return "Alumno";
-            default: return "Desconocido";
-        }
+        return switch (rol) {
+            case 0 -> "Admin";
+            case 1 -> "Profesor";
+            case 2 -> "Alumno";
+            default -> "Desconocido";
+        };
     }
-
 }
